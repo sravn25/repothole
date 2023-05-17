@@ -13,19 +13,19 @@ import {
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    height: "30vh",
+    // height: "30vh",
   },
 }));
 
-const Uploader = (): JSX.Element => {
+const Uploader = () => {
   const { classes } = useStyles();
 
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const resetRef = useRef<() => void>(null);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const resetRef = useRef(null);
 
   useEffect(() => {
-    let objectURL: string | null = null;
+    let objectURL = null;
 
     if (file) {
       objectURL = URL.createObjectURL(file);
@@ -38,7 +38,7 @@ const Uploader = (): JSX.Element => {
     };
   }, [file]);
 
-  const clearFile = (): void => {
+  const clearFile = () => {
     setFile(null);
     setPreview(null);
     resetRef.current?.();
@@ -46,7 +46,7 @@ const Uploader = (): JSX.Element => {
 
   return (
     <>
-      <Container size="md">
+      <Container size="lg">
         <Paper shadow="xs" radius="md" p="xl" m="xl" withBorder className={classes.wrapper}>
           <Center>
             <Image
@@ -57,6 +57,8 @@ const Uploader = (): JSX.Element => {
               alt="not found"
               src={preview}
               withPlaceholder
+              width={200}
+              height={200}
             />
           </Center>
         </Paper>

@@ -9066,6 +9066,11 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
+typeface-architects-daughter@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/typeface-architects-daughter/-/typeface-architects-daughter-1.1.13.tgz#abd80dbbdefec2785b99877a87a4379d289c5a25"
+  integrity sha512-+kY2cF4SbQJYgaMJNmJ/4f/TDNNgAFXwFSteS+bIKVfisWgAdWnNbBQenqYa1AZkZZMY18VwjXxwfkQus5kODg==
+
 typescript@^4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"

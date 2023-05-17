@@ -1,14 +1,15 @@
 import React from "react";
 import Uploader from "./Components/Uploader";
-import { MantineProvider } from "@mantine/core";
-// import logo from './logo.svg';
-// import "./App.css";
+import Nav from "./Components/Nav";
+import { MantineProvider, AppShell } from "@mantine/core";
 
 function App() {
-
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Uploader />
+      <AppShell padding="md">
+        <Nav />
+        <Uploader />
+      </AppShell>
     </MantineProvider>
   );
 }
