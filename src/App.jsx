@@ -1,6 +1,6 @@
 import React from "react";
-import Uploader from "./Components/Uploader";
 import Nav from "./Components/Nav";
+import Main from "./Components/Main";
 import { MantineProvider, AppShell } from "@mantine/core";
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <AppShell padding="md">
         <Nav />
-        <Uploader />
+        <Main />
       </AppShell>
     </MantineProvider>
   );
