@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { loadModel, identify } from "../Modules/Tensorflow";
 import {
   createStyles,
   Center,
@@ -10,7 +11,6 @@ import {
   FileButton,
   Image,
 } from "@mantine/core";
-// import * as tf from '@tensorflow/tfjs'
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -23,32 +23,69 @@ const Uploader = () => {
 
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const resetRef = useRef(null);
 
+  const [loaded, setLoaded] = useState(false);
+  const [predicted, setPredicted] = useState(false);
+
+  const resetRef = useRef(null);
+  // const fileInputRef = useRef(null);
+  const imageRef = useRef(null);
+
+  // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
 
     if (file) {
       objectURL = URL.createObjectURL(file);
       setPreview(objectURL);
+      runPrediction(objectURL);
     }
     return () => {
       if (objectURL) {
-        URL.revokeObjectURL(objectURL); 
+        URL.revokeObjectURL(objectURL);
       }
     };
   }, [file]);
 
+  // const loadOnce = true;
+  useEffect(() => {
+    try {
+      loadModel().then(() => {
+        setLoaded(true);
+        console.log(loaded);
+      });
+    } catch {
+      console.log("error loading model");
+    }
+  }, [loaded]);
+
   const clearFile = () => {
+    console.log(file);
+    console.log(preview);
+    console.log(resetRef);
     setFile(null);
     setPreview(null);
     resetRef.current?.();
   };
 
+  const runPrediction = async (objectURL) => {
+    if (!loaded) return;
+    else {
+      identify(objectURL).then(() => setPredicted(true));
+    }
+  };
+
   return (
     <>
       <Container size="lg">
-        <Paper shadow="xs" radius="md" p="xl" m="xl" withBorder className={classes.wrapper}>
+        <Paper
+          shadow="xs"
+          radius="md"
+          p="xl"
+          m="xl"
+          withBorder
+          className={classes.wrapper}
+        >
           <Center>
             <Image
               maw={500}
@@ -60,13 +97,18 @@ const Uploader = () => {
               withPlaceholder
               width={200}
               height={200}
+              ref={imageRef}
             />
           </Center>
         </Paper>
       </Container>
 
       <Group position="center">
-        <FileButton onChange={setFile} accept="image/png, image/jpeg">
+        <FileButton
+          onChange={setFile}
+          accept="image/png, image/jpeg"
+          disabled={!loaded}
+        >
           {(props) => <Button {...props}>Upload Image</Button>}
         </FileButton>
         <Button disabled={!file} color="red" onClick={clearFile}>
