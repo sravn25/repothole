@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { loadModel, identify } from "../Modules/Tensorflow";
+import { load, identify } from "../Modules/Tensorflow";
 import {
   createStyles,
   Center,
@@ -50,7 +50,7 @@ const Uploader = () => {
   // const loadOnce = true;
   useEffect(() => {
     try {
-      loadModel().then(() => {
+      load().then(() => {
         setLoaded(true);
         console.log(loaded);
       });

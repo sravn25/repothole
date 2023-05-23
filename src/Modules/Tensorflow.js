@@ -137,7 +137,7 @@ export const loadModel = async () => {
     // Load or import the model that contains the custom layer
     //const model = await tf.loadLayersModel('path/to/model.json');
     model = await tf.loadLayersModel(
-      "http://localhost:3000/tfjs_model/model.json"
+      "http://localhost:3000/NewTFJS/model.json"
     );
   } catch (error) {
     console.log(error);
@@ -150,7 +150,7 @@ export const loadModel = async () => {
 // remember to replace the import {loadModel} to {load} in Uploader.jsx
 export const load = async () => {
   try {
-    model = await tf.loadLayersModel("http://localhost:3000/tfjs_model/model.json")
+    model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json")
   } catch (error) {
     console.log(error);
   }
@@ -230,7 +230,8 @@ const predict = async (imageTensor) => {
     imageTensor.dispose();
     // resizedImg.dispose();
     // reshapedImg.dispose();
-    console.log(prediction);
+    console.log(`predict: ${prediction}`);
+    console.log(`prediction shape: ${predictionShape}`);
   } catch (error) {
     console.log(error);
     console.log("Error: TensorFlow Operation Failed");
