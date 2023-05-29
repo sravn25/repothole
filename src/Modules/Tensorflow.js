@@ -136,7 +136,8 @@ export const loadModel = async () => {
 
     // Load or import the model that contains the custom layer
     //const model = await tf.loadLayersModel('path/to/model.json');
-    model = await tf.loadLayersModel(
+    model = await tf.loadGraphModel(
+      //"http://localhost:3000/TFJSori/model.json"
       "http://localhost:3000/NewTFJS/model.json"
     );
   } catch (error) {
@@ -183,6 +184,7 @@ export const identify = async (imageURL) => {
 
   console.log(`reshaped image: ${reshapedImg}`);
   console.log(`reshaped size: ${reshapedImg.rank}`);
+  console.log("Reshaped image shape:", reshapedImg.shape);//new added
   // console.log(`added dim: ${expandImgTensor.rank}`)
 
   await predict(reshapedImg);
@@ -217,21 +219,30 @@ const loadImage = async (imageURL) => {
   });
 };
 
-const predict = async (imageTensor) => {
+export const predict = async (imageTensor) => {
   try {
-    const prediction = model.predict(imageTensor);
-    const predictionShape = prediction.shape;
+    const prediction = await model.predict(imageTensor);
+    const softmaxPrediction = tf.softmax(prediction); // Apply softmax function
+    const predictionValues = softmaxPrediction.arraySync();
+    const classes = ['plain', 'potholes']; // Replace with your actual class labels
 
-    if (predictionShape == null) {
-      console.log("Error: Unable to read predictionShape");
+    if (!predictionValues) {
+      console.log("Error: Unable to retrieve prediction values");
       return;
     }
 
+    // Get the index of the class with the highest probability score
+    const maxScoreIndex = tf.argMax(softmaxPrediction, 1).dataSync()[0];
+
+    // Retrieve the corresponding class label and score
+    const predictedClass = classes[maxScoreIndex];
+    const predictedScore = predictionValues[0][maxScoreIndex];
+
     imageTensor.dispose();
-    // resizedImg.dispose();
-    // reshapedImg.dispose();
-    console.log(`predict: ${prediction}`);
-    console.log(`prediction shape: ${predictionShape}`);
+    console.log("Predicted Class:", predictedClass);
+    console.log("Predicted Score:", predictedScore);
+    return { predictedClass, predictedScore };
+    //return  predictedClass, predictedScore;
   } catch (error) {
     console.log(error);
     console.log("Error: TensorFlow Operation Failed");
