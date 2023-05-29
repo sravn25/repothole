@@ -136,7 +136,8 @@ export const loadModel = async () => {
 
     // Load or import the model that contains the custom layer
     //const model = await tf.loadLayersModel('path/to/model.json');
-    model = await tf.loadLayersModel(
+    model = await tf.loadGraphModel(
+      //"http://localhost:3000/TFJSori/model.json"
       "http://localhost:3000/NewTFJS/model.json"
     );
   } catch (error) {
@@ -183,6 +184,7 @@ export const identify = async (imageURL) => {
 
   console.log(`reshaped image: ${reshapedImg}`);
   console.log(`reshaped size: ${reshapedImg.rank}`);
+  console.log("Reshaped image shape:", reshapedImg.shape);//new added
   // console.log(`added dim: ${expandImgTensor.rank}`)
 
   await predict(reshapedImg);
@@ -217,7 +219,7 @@ const loadImage = async (imageURL) => {
   });
 };
 
-const predict = async (imageTensor) => {
+export const predict = async (imageTensor) => {
   try {
     // const inputTensor = tf.tensor3d(imageTensor, [1, imageTensor.length]);
     const prediction = await model.predict(imageTensor);
@@ -226,10 +228,10 @@ const predict = async (imageTensor) => {
     const predictionScores = softmaxPrediction.arraySync();
     const classes = ['plain', 'potholes'];
     // const predictionScores = prediction.arraySync()[0];
-    const predictionShape = prediction.shape;
+    // const predictionShape = prediction.shape;
 
-    if (predictionShape == null) {
-      console.log("Error: Unable to read predictionShape");
+    if (!predictionScores) {
+      console.log("Error: Unable to retrieve prediction values");
       return;
     }
 
