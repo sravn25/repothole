@@ -5,10 +5,17 @@ import { Stack } from "@mantine/core";
 
 
 const Main = () => {
+
+  let output = "";
+
+  const handleOutput = (data) => {
+    console.log(`received data: ${data}`);
+  }
+
   return (
     <>
       <Stack h={"80vh"} justify="space-between">
-        <Uploader />
+        <Uploader sendOutput={handleOutput} />
         <Output />
       </Stack>
     </>

@@ -93,7 +93,7 @@ const Nav = () => {
             pt={"xs"}
             pb={"xs"}
           >
-            Admin Dashboard
+            Dashboard
           </Text>
         </Button>
       </Navbar.Section>

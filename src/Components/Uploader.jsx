@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { load, identify } from "../Modules/Tensorflow";
+import { load, identify, getOutput } from "../Modules/Tensorflow";
 import {
   createStyles,
   Center,
@@ -18,7 +18,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Uploader = () => {
+const Uploader = (props) => {
   const { classes } = useStyles();
 
   const [file, setFile] = useState(null);
@@ -71,7 +71,14 @@ const Uploader = () => {
   const runPrediction = async (objectURL) => {
     if (!loaded) return;
     else {
-      identify(objectURL).then(() => setPredicted(true));
+      await identify(objectURL)
+      props.sendOutput(getOutput);
+      // .then(() => {
+        // setPredicted(true);
+        // console.log(predicted);
+        // console.log("?");
+        // getOutput();
+      // });
     }
   };
 

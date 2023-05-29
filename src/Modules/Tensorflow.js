@@ -4,6 +4,7 @@ const { layers, image, tensor } = require("@tensorflow/tfjs");
 
 // export const runPrediction = async (imageRef) => {
 let model = null;
+let output = null;
 
 export const loadModel = async () => {
   // setIsModelLoading(true);
@@ -37,7 +38,6 @@ export const loadModel = async () => {
         reshapedInputs
           .array()
           .then((array) => console.log("reshapedInputs array:", array));
-
 
         // Resize the inputs to the desired dimensions
         const resizedInputs = tf.image.resizeBilinear(reshapedInputs, [
@@ -141,7 +141,7 @@ export const loadModel = async () => {
     );
   } catch (error) {
     console.log(error);
-    console.log("cant load model")
+    console.log("cant load model");
     // setIsModelLoading(false);
   }
 };
@@ -150,11 +150,11 @@ export const loadModel = async () => {
 // remember to replace the import {loadModel} to {load} in Uploader.jsx
 export const load = async () => {
   try {
-    model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json")
+    model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export const identify = async (imageURL) => {
   if (!model) {
@@ -219,7 +219,13 @@ const loadImage = async (imageURL) => {
 
 const predict = async (imageTensor) => {
   try {
-    const prediction = model.predict(imageTensor);
+    // const inputTensor = tf.tensor3d(imageTensor, [1, imageTensor.length]);
+    const prediction = await model.predict(imageTensor);
+    // apply softmax function
+    const softmaxPrediction = tf.softmax(prediction);
+    const predictionScores = softmaxPrediction.arraySync();
+    const classes = ['plain', 'potholes'];
+    // const predictionScores = prediction.arraySync()[0];
     const predictionShape = prediction.shape;
 
     if (predictionShape == null) {
@@ -227,13 +233,37 @@ const predict = async (imageTensor) => {
       return;
     }
 
+    if (!predictionScores) {
+      console.log("Error: Unable to retrieve prediction values");
+      return;
+    }
+
+    // index of class with highest probability
+    const maxScoreIndex = tf.argMax(softmaxPrediction, 1).dataSync()[0];
+
+    // retrieve class label and score
+    const predictedClass = classes[maxScoreIndex];
+    const predictedScore = predictionScores[0][maxScoreIndex];
+
     imageTensor.dispose();
     // resizedImg.dispose();
     // reshapedImg.dispose();
-    console.log(`predict: ${prediction}`);
-    console.log(`prediction shape: ${predictionShape}`);
+    // console.log(`predict: ${prediction}`);
+    output = `"Predicted class: ${predictedClass}
+              "Predicted Score: ${predictedScore}`;
+    console.log(output);
   } catch (error) {
     console.log(error);
     console.log("Error: TensorFlow Operation Failed");
+  }
+};
+
+export const getOutput = () => {
+  if (!output) {
+    console.log("no output");
+    return "";
+  } else {
+    console.log(output);
+    return output;
   }
 };

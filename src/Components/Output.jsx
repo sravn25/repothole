@@ -13,9 +13,12 @@ const Output = () => {
   const { classes } = useStyles();
 
   return <>
-		<Paper shadow="xs" className={classes.terminalBox}>
-			<Text>
+		<Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
+			<Text pl={"xs"}>
 				Output
+				</Text>
+				<Text>
+					{"output here"}
 				</Text>
 		</Paper>
 	</>;
