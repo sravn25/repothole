@@ -1,7 +1,6 @@
 import React from "react";
 import Uploader from "./Uploader";
 import Output from "./Output";
-import Dashboard from "./Dashboard";
 import { Stack } from "@mantine/core";
 
 
@@ -19,7 +18,6 @@ const Main = () => {
         <Uploader sendOutput={handleOutput} />
         <Output />
       </Stack>
-      <Dashboard />
     </>
   );
 };

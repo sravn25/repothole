@@ -10,6 +10,8 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import potholeIcon from "../images/pothole.png";
+import { Link } from "react-router-dom";
+import { booleanMaskAsync } from "@tensorflow/tfjs";
 
 const useStyles = createStyles((theme) => ({
   nav: {
@@ -23,6 +25,10 @@ const useStyles = createStyles((theme) => ({
   navFooter: {
     borderTop: "1px solid gray",
     // backgroundColor: "#F0BBDD",
+  },
+  link: {
+    textDecoration: "none",
+    color: "white",
   },
 }));
 
@@ -86,16 +92,18 @@ const Nav = () => {
         </Stack>
       </Navbar.Section>
       <Navbar.Section className={classes.navFooter}>
-        <Button color="blue" radius="xs" size="xl" fullWidth>
-          <Text
-            fz={{ md: "md", lg: "md", base: "xs" }}
-            fw={400}
-            pt={"xs"}
-            pb={"xs"}
-          >
-            Dashboard
-          </Text>
-        </Button>
+        <Link to="/admin" className={classes.link}>
+          <Button color="blue" radius="xs" size="xl" fullWidth>
+            <Text
+              fz={{ md: "md", lg: "md", base: "xs" }}
+              fw={400}
+              pt={"xs"}
+              pb={"xs"}
+            >
+              Dashboard
+            </Text>
+          </Button>
+        </Link>
       </Navbar.Section>
     </Navbar>
   );
