@@ -1,11 +1,135 @@
 import * as tf from "@tensorflow/tfjs";
 
-const { layers, image, tensor } = require("@tensorflow/tfjs");
+// const { layers, image, tensor } = require("@tensorflow/tfjs");
 
 // export const runPrediction = async (imageRef) => {
 let model = null;
 let output = null;
 
+// Need to write a function to validate the output
+// only want pothole output, if plain just reset it to empty
+// must run once during every prediction to keep the output clean
+const validateOutput = (score) => score === 1 ? true : false;
+
+
+export const getOutput = () => {
+  if (output) return output;
+};
+
+// dummy function (use this to test)
+// remember to replace the import {loadModel} to {load} in Uploader.jsx
+export const load = async () => {
+  try {
+    model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const identify = async (imageURL) => {
+  if (!model) {
+    console.log("Model not loaded");
+    return;
+  }
+  const imageTensor = await loadImage(imageURL);
+  if (imageTensor == null) {
+    console.log("Error: Unable to create image tensor");
+    return;
+  }
+
+  // Validate the input shape
+  if (imageTensor.shape.length !== 3) {
+    console.log("Invalid input shape");
+    return;
+  }
+  // Resize the image to the desired input shape [300, 450]
+  const resizedImg = tf.image.resizeBilinear(imageTensor, [300, 450]);
+
+  // Reshape the image to match the model's expected input shape [1, 300, 450, 3]
+  const reshapedImg = resizedImg.reshape([1, 300, 450, 3]);
+
+  // add extra dimension
+  // const expandImgTensor = resizedImg.expandDims();
+
+  console.log(`reshaped image: ${reshapedImg}`);
+  console.log(`reshaped size: ${reshapedImg.rank}`);
+  console.log("Reshaped image shape:", reshapedImg.shape);//new added
+  // console.log(`added dim: ${expandImgTensor.rank}`)
+
+  await predict(reshapedImg);
+};
+
+const loadImage = async (imageURL) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      const context = canvas.getContext("2d");
+      context.drawImage(img, 0, 0);
+
+      const imageData = context.getImageData(0, 0, img.width, img.height);
+      const imageTensor = tf.browser.fromPixels(imageData);
+
+      console.log(`Image tensor: ${imageTensor}`);
+      resolve(imageTensor);
+
+      /*
+      if (imageTensor == null) {
+        console.log("Error: Unable to read image data");
+        return;
+      }
+      */
+    };
+    img.onerror = () => reject(new Error("Error: Failed to load image"));
+    img.src = imageURL;
+  });
+};
+
+export const predict = async (imageTensor) => {
+  try {
+    // const inputTensor = tf.tensor3d(imageTensor, [1, imageTensor.length]);
+    const prediction = await model.predict(imageTensor);
+    // apply softmax function
+    const softmaxPrediction = tf.softmax(prediction);
+    const predictionScores = softmaxPrediction.arraySync();
+    const classes = ['plain', 'potholes'];
+    // const predictionScores = prediction.arraySync()[0];
+    // const predictionShape = prediction.shape;
+
+    if (!predictionScores) {
+      console.log("Error: Unable to retrieve prediction values");
+      return;
+    }
+
+    if (!predictionScores) {
+      console.log("Error: Unable to retrieve prediction values");
+      return;
+    }
+
+    // index of class with highest probability
+    const maxScoreIndex = tf.argMax(softmaxPrediction, 1).dataSync()[0];
+
+    // retrieve class label and score
+    const predictedClass = classes[maxScoreIndex];
+    const predictedScore = predictionScores[0][maxScoreIndex];
+
+    imageTensor.dispose();
+    // resizedImg.dispose();
+    // reshapedImg.dispose();
+    // console.log(`predict: ${prediction}`);
+    output = `"Predicted class: ${predictedClass}
+              "Predicted Score: ${predictedScore}`;
+    console.log(output);
+  } catch (error) {
+    console.log(error);
+    console.log("Error: TensorFlow Operation Failed");
+  }
+};
+
+/*
 export const loadModel = async () => {
   // setIsModelLoading(true);
   try {
@@ -146,126 +270,4 @@ export const loadModel = async () => {
     // setIsModelLoading(false);
   }
 };
-
-// dummy function (use this to test)
-// remember to replace the import {loadModel} to {load} in Uploader.jsx
-export const load = async () => {
-  try {
-    model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const identify = async (imageURL) => {
-  if (!model) {
-    console.log("Model not loaded");
-    return;
-  }
-  const imageTensor = await loadImage(imageURL);
-  if (imageTensor == null) {
-    console.log("Error: Unable to create image tensor");
-    return;
-  }
-
-  // Validate the input shape
-  if (imageTensor.shape.length !== 3) {
-    console.log("Invalid input shape");
-    return;
-  }
-  // Resize the image to the desired input shape [300, 450]
-  const resizedImg = tf.image.resizeBilinear(imageTensor, [300, 450]);
-
-  // Reshape the image to match the model's expected input shape [1, 300, 450, 3]
-  const reshapedImg = resizedImg.reshape([1, 300, 450, 3]);
-
-  // add extra dimension
-  // const expandImgTensor = resizedImg.expandDims();
-
-  console.log(`reshaped image: ${reshapedImg}`);
-  console.log(`reshaped size: ${reshapedImg.rank}`);
-  console.log("Reshaped image shape:", reshapedImg.shape);//new added
-  // console.log(`added dim: ${expandImgTensor.rank}`)
-
-  await predict(reshapedImg);
-};
-
-const loadImage = async (imageURL) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      const context = canvas.getContext("2d");
-      context.drawImage(img, 0, 0);
-
-      const imageData = context.getImageData(0, 0, img.width, img.height);
-      const imageTensor = tf.browser.fromPixels(imageData);
-
-      console.log(`Image tensor: ${imageTensor}`);
-      resolve(imageTensor);
-
-      /*
-      if (imageTensor == null) {
-        console.log("Error: Unable to read image data");
-        return;
-      }
-      */
-    };
-    img.onerror = () => reject(new Error("Error: Failed to load image"));
-    img.src = imageURL;
-  });
-};
-
-export const predict = async (imageTensor) => {
-  try {
-    // const inputTensor = tf.tensor3d(imageTensor, [1, imageTensor.length]);
-    const prediction = await model.predict(imageTensor);
-    // apply softmax function
-    const softmaxPrediction = tf.softmax(prediction);
-    const predictionScores = softmaxPrediction.arraySync();
-    const classes = ['plain', 'potholes'];
-    // const predictionScores = prediction.arraySync()[0];
-    // const predictionShape = prediction.shape;
-
-    if (!predictionScores) {
-      console.log("Error: Unable to retrieve prediction values");
-      return;
-    }
-
-    if (!predictionScores) {
-      console.log("Error: Unable to retrieve prediction values");
-      return;
-    }
-
-    // index of class with highest probability
-    const maxScoreIndex = tf.argMax(softmaxPrediction, 1).dataSync()[0];
-
-    // retrieve class label and score
-    const predictedClass = classes[maxScoreIndex];
-    const predictedScore = predictionScores[0][maxScoreIndex];
-
-    imageTensor.dispose();
-    // resizedImg.dispose();
-    // reshapedImg.dispose();
-    // console.log(`predict: ${prediction}`);
-    output = `"Predicted class: ${predictedClass}
-              "Predicted Score: ${predictedScore}`;
-    console.log(output);
-  } catch (error) {
-    console.log(error);
-    console.log("Error: TensorFlow Operation Failed");
-  }
-};
-
-export const getOutput = () => {
-  if (!output) {
-    console.log("no output");
-    return "";
-  } else {
-    console.log(output);
-    return output;
-  }
-};
+*/

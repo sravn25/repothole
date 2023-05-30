@@ -25,7 +25,7 @@ const Uploader = (props) => {
   const [preview, setPreview] = useState(null);
 
   const [loaded, setLoaded] = useState(false);
-  const [predicted, setPredicted] = useState(false);
+  // const [predicted, setPredicted] = useState(false);
 
   const resetRef = useRef(null);
   // const fileInputRef = useRef(null);
@@ -72,7 +72,7 @@ const Uploader = (props) => {
     if (!loaded) return;
     else {
       await identify(objectURL)
-      props.sendOutput(getOutput);
+      props.sendOutput(getOutput());
       // .then(() => {
         // setPredicted(true);
         // console.log(predicted);

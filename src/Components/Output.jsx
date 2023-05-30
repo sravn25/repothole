@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { createStyles, Paper, Text } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -9,7 +9,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 // terminal based output for machine learning
-const Output = () => {
+const Output = (props) => {
   const { classes } = useStyles();
 
   return <>
@@ -19,6 +19,7 @@ const Output = () => {
 				</Text>
 				<Text>
 					{"output here"}
+					{props.data}
 				</Text>
 		</Paper>
 	</>;

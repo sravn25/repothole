@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   createStyles,
   Navbar,
@@ -10,8 +10,8 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import potholeIcon from "../images/pothole.png";
-import { Link } from "react-router-dom";
-import { booleanMaskAsync } from "@tensorflow/tfjs";
+import { Link, useLocation } from "react-router-dom";
+// import { booleanMaskAsync } from "@tensorflow/tfjs";
 
 const useStyles = createStyles((theme) => ({
   nav: {
@@ -21,6 +21,10 @@ const useStyles = createStyles((theme) => ({
 
   navHeader: {
     borderBottom: "1px solid gray",
+  },
+  navLogo: {
+    color: "black",
+    textDecoration: "none",
   },
   navFooter: {
     borderTop: "1px solid gray",
@@ -34,6 +38,13 @@ const useStyles = createStyles((theme) => ({
 
 const Nav = () => {
   const { classes } = useStyles();
+
+  const [dashboard, setDashboard] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    location.pathname === "/" ? setDashboard(false) : setDashboard(true);
+  }, [location]);
 
   const potholeUpdates = [
     { id: 0, location: "x", time: "x" },
@@ -61,16 +72,18 @@ const Nav = () => {
       className={classes.nav}
     >
       <Navbar.Section className={classes.navHeader}>
-        <Flex align="center" p="md" direction={{ base: "column", sm: "row" }}>
-          <img src={potholeIcon} width={50} height={50} alt="header logo" />
-          <Text
-            fz={{ md: "md", lg: "lg", base: "xs" }}
-            fw={700}
-            sx={{ fontFamily: "Architects Daughter" }}
-          >
-            RepotHole
-          </Text>
-        </Flex>
+        <Link to={!dashboard ? "/admin" : "/"} className={classes.navLogo}>
+          <Flex align="center" p="md" direction={{ base: "column", sm: "row" }}>
+            <img src={potholeIcon} width={50} height={50} alt="header logo" />
+            <Text
+              fz={{ md: "md", lg: "lg", base: "xs" }}
+              fw={700}
+              sx={{ fontFamily: "Architects Daughter" }}
+            >
+              RepotHole
+            </Text>
+          </Flex>
+        </Link>
       </Navbar.Section>
       <Navbar.Section grow mt="md" component={ScrollArea}>
         <Text
@@ -92,7 +105,7 @@ const Nav = () => {
         </Stack>
       </Navbar.Section>
       <Navbar.Section className={classes.navFooter}>
-        <Link to="/admin" className={classes.link}>
+        <Link to={!dashboard ? "/admin" : "/"} className={classes.link}>
           <Button color="blue" radius="xs" size="xl" fullWidth>
             <Text
               fz={{ md: "md", lg: "md", base: "xs" }}
@@ -100,7 +113,7 @@ const Nav = () => {
               pt={"xs"}
               pb={"xs"}
             >
-              Dashboard
+              {!dashboard ? <span>Dashboard</span> : <span>Return</span>}
             </Text>
           </Button>
         </Link>
