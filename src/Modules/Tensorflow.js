@@ -98,9 +98,10 @@ export const predict = async (imageTensor) => {
     const predictedScore = predictionScores[0][maxScoreIndex];
 
     imageTensor.dispose();
-    output = `Predicted class: ${predictedClass}\n
-    Predicted Score: ${predictedScore}`;
-    console.log(output);
+    console.log(`Predicted class: ${predictedClass}\n
+    Predicted Score: ${predictedScore}`);
+    output = `${predictedClass} ${predictedScore}`;
+    console.log(output)
   } catch (error) {
     console.log(error);
     console.log("Error: TensorFlow Operation Failed");

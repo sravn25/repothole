@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, Paper, Text } from "@mantine/core";
+import Decimal from "decimal.js";
 
 const useStyles = createStyles((theme) => ({
   terminalBox: {
@@ -8,11 +9,15 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+/*
+  expected output
+  Result: No Pothole Detected / Pothole Detected
+  Confidence: 85%
+*/
 
 /* Output data looks like this  {
 
-    output = `Predicted class: ${predictedClass}\n
-    Predicted Score: ${predictedScore}`;
+  output format: `${class} ${score}`
 
 	Can update accordingly at Tensorflow.js (line 101-102)
 	
@@ -26,7 +31,6 @@ const Output = (props) => {
   const { classes } = useStyles();
 
   return (
-
     /* (remove when done)
 
 				1. Alert user if pothole detected (top priority)
@@ -39,8 +43,9 @@ const Output = (props) => {
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text pl={"xs"}>Output</Text>
-        <Text>{props.data}</Text>
+        <Text>Output</Text>
+        <Text>{props.classData}</Text>
+        <Text>{props.scoreData}</Text>
       </Paper>
     </>
   );
