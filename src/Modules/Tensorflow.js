@@ -1,8 +1,5 @@
 import * as tf from "@tensorflow/tfjs";
 
-// const { layers, image, tensor } = require("@tensorflow/tfjs");
-
-// export const runPrediction = async (imageRef) => {
 let model = null;
 let output = null;
 
@@ -16,8 +13,7 @@ export const getOutput = () => {
   if (output) return output;
 };
 
-// dummy function (use this to test)
-// remember to replace the import {loadModel} to {load} in Uploader.jsx
+// loads NewTFJS as graph model 
 export const load = async () => {
   try {
     model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
@@ -26,11 +22,14 @@ export const load = async () => {
   }
 };
 
+// Reshape image and run prediction function
 export const identify = async (imageURL) => {
   if (!model) {
     console.log("Model not loaded");
     return;
   }
+
+  // load image as tensor
   const imageTensor = await loadImage(imageURL);
   if (imageTensor == null) {
     console.log("Error: Unable to create image tensor");
@@ -48,17 +47,14 @@ export const identify = async (imageURL) => {
   // Reshape the image to match the model's expected input shape [1, 300, 450, 3]
   const reshapedImg = resizedImg.reshape([1, 300, 450, 3]);
 
-  // add extra dimension
-  // const expandImgTensor = resizedImg.expandDims();
-
   console.log(`reshaped image: ${reshapedImg}`);
   console.log(`reshaped size: ${reshapedImg.rank}`);
-  console.log("Reshaped image shape:", reshapedImg.shape);//new added
-  // console.log(`added dim: ${expandImgTensor.rank}`)
+  console.log("Reshaped image shape:", reshapedImg.shape);
 
   await predict(reshapedImg);
 };
 
+// convert image and return tensor
 const loadImage = async (imageURL) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -75,34 +71,19 @@ const loadImage = async (imageURL) => {
 
       console.log(`Image tensor: ${imageTensor}`);
       resolve(imageTensor);
-
-      /*
-      if (imageTensor == null) {
-        console.log("Error: Unable to read image data");
-        return;
-      }
-      */
     };
     img.onerror = () => reject(new Error("Error: Failed to load image"));
     img.src = imageURL;
   });
 };
 
+// run the prediction
 export const predict = async (imageTensor) => {
   try {
-    // const inputTensor = tf.tensor3d(imageTensor, [1, imageTensor.length]);
     const prediction = await model.predict(imageTensor);
-    // apply softmax function
-    const softmaxPrediction = tf.softmax(prediction);
+    const softmaxPrediction = tf.softmax(prediction); // apply softmax function
     const predictionScores = softmaxPrediction.arraySync();
-    const classes = ['plain', 'potholes'];
-    // const predictionScores = prediction.arraySync()[0];
-    // const predictionShape = prediction.shape;
-
-    if (!predictionScores) {
-      console.log("Error: Unable to retrieve prediction values");
-      return;
-    }
+    const classes = ['plain', 'potholes']; // classes for result
 
     if (!predictionScores) {
       console.log("Error: Unable to retrieve prediction values");
@@ -117,11 +98,8 @@ export const predict = async (imageTensor) => {
     const predictedScore = predictionScores[0][maxScoreIndex];
 
     imageTensor.dispose();
-    // resizedImg.dispose();
-    // reshapedImg.dispose();
-    // console.log(`predict: ${prediction}`);
-    output = `"Predicted class: ${predictedClass}
-              "Predicted Score: ${predictedScore}`;
+    output = `Predicted class: ${predictedClass}\n
+    Predicted Score: ${predictedScore}`;
     console.log(output);
   } catch (error) {
     console.log(error);
@@ -130,6 +108,9 @@ export const predict = async (imageTensor) => {
 };
 
 /*
+
+// .h5 keras model (does not work)
+
 export const loadModel = async () => {
   // setIsModelLoading(true);
   try {

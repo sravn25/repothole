@@ -21,14 +21,12 @@ const useStyles = createStyles((theme) => ({
 const Uploader = (props) => {
   const { classes } = useStyles();
 
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null); // selected image file
+  const [preview, setPreview] = useState(null); // preview selected image file
 
-  const [loaded, setLoaded] = useState(false);
-  // const [predicted, setPredicted] = useState(false);
+  const [loaded, setLoaded] = useState(false); // loaded ML model
 
-  const resetRef = useRef(null);
-  // const fileInputRef = useRef(null);
+  const resetRef = useRef(null); 
   const imageRef = useRef(null);
 
   // sets preview when file is uploaded
@@ -47,7 +45,7 @@ const Uploader = (props) => {
     };
   }, [file]);
 
-  // const loadOnce = true;
+  // load ML model only once
   useEffect(() => {
     try {
       load().then(() => {
@@ -59,6 +57,7 @@ const Uploader = (props) => {
     }
   }, [loaded]);
 
+  // removes selected image and its preview
   const clearFile = () => {
     console.log(file);
     console.log(preview);
@@ -68,21 +67,35 @@ const Uploader = (props) => {
     resetRef.current?.();
   };
 
+  // predict function
   const runPrediction = async (objectURL) => {
     if (!loaded) return;
     else {
-      await identify(objectURL)
-      props.sendOutput(getOutput());
-      // .then(() => {
-        // setPredicted(true);
-        // console.log(predicted);
-        // console.log("?");
-        // getOutput();
-      // });
+      await identify(objectURL); // run prediction in Tensorflow.js
+      props.sendOutput(getOutput()); // send output to Main.jsx
+
+      /* (remove when done)
+
+      1. need to set if predicted, no need to show loading animation
+         when predicting, show loading animation
+
+      2. remove output content if uploading / predicting new image
+
+      */
+
     }
   };
 
   return (
+
+    /* (remove when done)
+
+        1. Add loading animation during prediction time
+        2. Prompt user for location
+        3. Disable Upload button if location not shared
+
+    */
+
     <>
       <Container size="lg">
         <Paper

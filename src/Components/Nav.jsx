@@ -39,13 +39,15 @@ const useStyles = createStyles((theme) => ({
 const Nav = () => {
   const { classes } = useStyles();
 
-  const [dashboard, setDashboard] = useState(false);
-  const location = useLocation();
+  const [dashboard, setDashboard] = useState(false); // view set to dashboard or not
+  const location = useLocation(); // current route path
 
   useEffect(() => {
     location.pathname === "/" ? setDashboard(false) : setDashboard(true);
-  }, [location]);
+  }, [location]); // checks if in dashboard or not
 
+
+  // requires actual data
   const potholeUpdates = [
     { id: 0, location: "x", time: "x" },
     { id: 1, location: "b", time: "c" },
@@ -66,6 +68,15 @@ const Nav = () => {
   ];
 
   return (
+
+    /* (remove when done)
+
+        1. Display the pothole updates properly
+        2. Limit the pothole updates at 15 updates
+        3.
+
+    */
+
     <Navbar
       width={{ sm: "15vw", lg: "20vw", base: 100 }}
       withBorder

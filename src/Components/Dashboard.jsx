@@ -4,14 +4,6 @@ import { getDatabase, ref, onValue, update } from "firebase/database";
 // import { saveAs } from 'file-saver';
 import { jsPDF } from "jspdf";
 import {
-  // createStyles,
-  // Center,
-  // Container,
-  // Button,
-  // Group,
-  // Paper,
-  // Text,
-  // FileButton,
   Image,
 } from "@mantine/core";
 
@@ -39,7 +31,7 @@ const generatePDFData = async (id, imageUrl, rowData) => {
   doc.text("Repair Status: " + rowData.repairStatus, 10, 50);
   doc.text("Repair Completion Date: " + rowData.repairCompletionDate, 10, 60);
 
-  doc.save("pothole_report.pdf"); // Download the PDF with a specified file name
+  doc.save(`pothole_report${id}.pdf`); // Download the PDF with a specified file name
 };
 
 const loadImage = (url) => {
@@ -156,6 +148,13 @@ const Dashboard = () => {
   };
 
   return (
+
+    /* (remove when done)
+
+        1. Redesign to be consistent with frontend
+
+    */
+
     <div>
       <table>
         <thead>
