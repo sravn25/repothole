@@ -26,9 +26,11 @@ const Uploader = (props) => {
 
   const [loaded, setLoaded] = useState(false); // loaded ML model
 
-  const resetRef = useRef(null); 
+  const resetRef = useRef(null);
   const imageRef = useRef(null);
 
+  const [location, setLocation] = useState(null);
+  const [locationAddress, setLocationAddress] = useState('');
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
@@ -86,6 +88,54 @@ const Uploader = (props) => {
     }
   };
 
+
+
+
+
+  // fetch latitute & longtitude
+  const successCallback = (position) => {
+    setLocation(position);
+
+    // convert latitute & longtitude to human readable address
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setLocationAddress(data.display_name);
+      })
+      .catch((error) => {
+        console.log('Error fetching location address:', error);
+      });
+  };
+  // location function - error call back
+  const errorCallback = (error) => {
+    console.log(error);
+  };
+  //location function - make location more accurate
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+  };
+
+  //get current position
+  useEffect(() => {
+    if (navigator.geolocation) { //call Geolocation API by calling navigator.geolocation
+      navigator.geolocation.getCurrentPosition(  //Returns the current location of the device
+        successCallback,
+        errorCallback,
+        options,
+        (error) => {
+          console.log('Error retrieving location:', error);
+        }
+      );
+    } else {
+      console.log('Geolocation is not supported in this browser');
+    }
+  }, []);
+
+
+
+
+
   return (
 
     /* (remove when done)
@@ -139,6 +189,15 @@ const Uploader = (props) => {
         <Text size="sm" align="center" mt="sm">
           Picked file: {file.name}
         </Text>
+      )}
+
+
+      {location ? (  /* display location (remove this after testing) */
+        <Text>
+          Location: {locationAddress}
+        </Text>
+      ) : (
+        <Text>Fetching location...</Text>
       )}
     </>
   );
