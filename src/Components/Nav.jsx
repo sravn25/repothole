@@ -71,7 +71,7 @@ const Nav = () => {
 
     /* (remove when done)
 
-        1. Display the pothole updates properly
+        1. Display the pothole updates properly (fetching from database and appending them to an array)
         2. Limit the pothole updates at 15 updates
         3.
 

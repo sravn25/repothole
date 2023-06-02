@@ -30,7 +30,7 @@ const Uploader = (props) => {
   const imageRef = useRef(null);
 
   const [location, setLocation] = useState(null);
-  const [locationAddress, setLocationAddress] = useState('');
+  const [locationAddress, setLocationAddress] = useState("");
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
@@ -61,12 +61,14 @@ const Uploader = (props) => {
 
   // removes selected image and its preview
   const clearFile = () => {
+    console.log("clearFile start");
     console.log(file);
     console.log(preview);
     console.log(resetRef);
     setFile(null);
     setPreview(null);
     resetRef.current?.();
+    console.log("clearFile end");
   };
 
   // predict function
@@ -78,32 +80,26 @@ const Uploader = (props) => {
 
       /* (remove when done)
 
-      1. need to set if predicted, no need to show loading animation
-         when predicting, show loading animation
-
-      2. remove output content if uploading / predicting new image
+      1. remove output content if uploading / predicting new image
 
       */
-
     }
   };
-
-
-
-
 
   // fetch latitute & longtitude
   const successCallback = (position) => {
     setLocation(position);
 
     // convert latitute & longtitude to human readable address
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setLocationAddress(data.display_name);
       })
       .catch((error) => {
-        console.log('Error fetching location address:', error);
+        console.log("Error fetching location address:", error);
       });
   };
   // location function - error call back
@@ -118,31 +114,26 @@ const Uploader = (props) => {
 
   //get current position
   useEffect(() => {
-    if (navigator.geolocation) { //call Geolocation API by calling navigator.geolocation
-      navigator.geolocation.getCurrentPosition(  //Returns the current location of the device
+    if (navigator.geolocation) {
+      //call Geolocation API by calling navigator.geolocation
+      navigator.geolocation.getCurrentPosition(
+        //Returns the current location of the device
         successCallback,
         errorCallback,
         options,
         (error) => {
-          console.log('Error retrieving location:', error);
+          console.log("Error retrieving location:", error);
         }
       );
     } else {
-      console.log('Geolocation is not supported in this browser');
+      console.log("Geolocation is not supported in this browser");
     }
   }, []);
 
-
-
-
-
   return (
-
     /* (remove when done)
 
-        1. Add loading animation during prediction time
-        2. Prompt user for location
-        3. Disable Upload button if location not shared
+        1. Disable Upload button if location not shared
 
     */
 
@@ -191,11 +182,8 @@ const Uploader = (props) => {
         </Text>
       )}
 
-
-      {location ? (  /* display location (remove this after testing) */
-        <Text>
-          Location: {locationAddress}
-        </Text>
+      {location /* display location (remove this after testing) */ ? (
+        <Text>Location: {locationAddress}</Text>
       ) : (
         <Text>Fetching location...</Text>
       )}

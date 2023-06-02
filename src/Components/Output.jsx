@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createStyles, Paper, Text } from "@mantine/core";
-import Decimal from "decimal.js";
+// import Decimal from "decimal.js";
+import { SkeletonLoader } from "./Loader";
 
 const useStyles = createStyles((theme) => ({
   terminalBox: {
@@ -17,13 +18,9 @@ const useStyles = createStyles((theme) => ({
 
 /* Output data looks like this  {
 
-  output format: `${class} ${score}`
+  output format: `${class} ${score}` (Tensorflow.js [line 101-102])
 
-	Can update accordingly at Tensorflow.js (line 101-102)
-	
-	*if made an object, remember to use object notation, ie. {props.data.class}
-	*if made an array, remember to use array notation, ie. {props.data[i]}
-}
+  }
 */
 
 // terminal based output for machine learning
@@ -43,9 +40,15 @@ const Output = (props) => {
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Output</Text>
-        <Text>{props.classData}</Text>
-        <Text>{props.scoreData}</Text>
+        <Text>Result</Text>
+        {props.loading ? (
+          <SkeletonLoader />
+        ) : (
+          <div>
+            <Text>{props.classData}</Text>
+            <Text>{props.scoreData}</Text>
+          </div>
+        )}
       </Paper>
     </>
   );
