@@ -1,17 +1,25 @@
 export class Pothole {
+  statusArr = [
+    "Under Review",
+    "In Progress",
+    "Completed",
+    "Cancelled",
+  ];
 
-	status = "Under Review";
+  constructor(location, time, score, status, image) {
+    this.location = location; //geolocation
+    this.time = time; // GMT time
+    this.score = score; // confidence score
+		this.status = this.statusArr[status]; // index in status array
+    this.image = image; // image URL
+  }
 
-	constructor(confidence, location, time)	{
-		this.confidence = confidence;
-		this.location = location;
-		this.time = time;
-	}
+  setStatus(status) {
+    this.status = status;
+  }
 
-	updateStatus(status) {
-		
-	}
-
+  getStatus() {
+    return this.status;
+  }
+  
 }
-
-// const pothole1 = new Pothole(0.99, "Subang Jaya", "10:34AM");
