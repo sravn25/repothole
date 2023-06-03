@@ -26,12 +26,19 @@ const Main = () => {
     }
   };
 
-  // runs when score is updated
+/*   // runs when score is updated
   useEffect(() => {
     console.log("updated outputScore", outputScore);
     !outputScore ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
     parseInt(outputScore) >= 90 ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
-  }, [outputScore]);
+  }, [outputScore]); */
+
+    // runs when score is updated
+    useEffect(() => {
+      console.log("updated outputScore", outputClass);
+      !outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
+      outputClass == "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+    }, [outputClass]);
 
   // receives output text from Tensorflow.js and runs the function above
   // output format: `${class} ${score}`
