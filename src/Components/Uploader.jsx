@@ -34,7 +34,6 @@ const Uploader = (props) => {
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
-
     if (file) {
       objectURL = URL.createObjectURL(file);
       setPreview(objectURL);
@@ -75,14 +74,9 @@ const Uploader = (props) => {
   const runPrediction = async (objectURL) => {
     if (!loaded) return;
     else {
+      props.sendOutput("");
       await identify(objectURL); // run prediction in Tensorflow.js
       props.sendOutput(getOutput()); // send output to Main.jsx
-
-      /* (remove when done)
-
-      1. remove output content if uploading / predicting new image
-
-      */
     }
   };
 
@@ -131,12 +125,6 @@ const Uploader = (props) => {
   }, []);
 
   return (
-    /* (remove when done)
-
-        1. Disable Upload button if location not shared
-
-    */
-
     <>
       <Container size="lg">
         <Paper
@@ -168,7 +156,7 @@ const Uploader = (props) => {
         <FileButton
           onChange={setFile}
           accept="image/png, image/jpeg"
-          disabled={!loaded}
+          disabled={!loaded || !locationAddress}
         >
           {(props) => <Button {...props}>Upload Image</Button>}
         </FileButton>
