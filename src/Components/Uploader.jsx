@@ -31,6 +31,8 @@ const Uploader = (props) => {
 
   const [location, setLocation] = useState(null);
   const [locationAddress, setLocationAddress] = useState("");
+
+  const [text, setText] = useState("");
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
@@ -66,6 +68,7 @@ const Uploader = (props) => {
     console.log(resetRef);
     setFile(null);
     setPreview(null);
+    props.sendOutput("");
     resetRef.current?.();
     console.log("clearFile end");
   };
@@ -169,6 +172,8 @@ const Uploader = (props) => {
           Picked file: {file.name}
         </Text>
       )}
+
+
 
       {location /* display location (remove this after testing) */ ? (
         <Text>Location: {locationAddress}</Text>
