@@ -30,26 +30,29 @@ const Output = (props) => {
   return (
     /* (remove when done)
 
-        1. Alert user if pothole detected (top priority)
-
+        1. Alert user if pothole detected (top priority) (done)
         2. Create a template for output display
-        3. Clean output data whenever preview image is removed
+        3. Clean output data whenever preview image is removed (done)
         4. Loading animation when predicting
 
     */
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Result</Text>
-        {props.loading ? ( 
-          <div>
-            <Text>Please upload an image to start detection.</Text>
-          </div>
+        <Text>Results</Text>
+        {props.loading ? (
+          <>
+            {props.loader ? (
+              <SkeletonLoader />
+            ) : (
+              <Text>Please upload an image to start detection.</Text>
+            )}
+          </>
         ) : (
-          <div>
+          <>
             <Text>{props.classData}</Text>
             <Text>{props.scoreData}</Text>
-          </div>
+          </>
         )}
       </Paper>
     </>
