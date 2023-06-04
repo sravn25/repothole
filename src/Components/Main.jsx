@@ -10,35 +10,46 @@ const Main = () => {
   const [outputScore, setOutputScore] = useState("");
   const [showAlert, setShowAlert] = useState(true);
   const [predicting, setPredicting] = useState(true);
+  const [skeleton, setSkeleton] = useState(true);
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
     if (newData === "") {
       setOutputClass("");
       setOutputScore("");
+      setPredicting(true);
+      setSkeleton(false);
       return;
     } else {
+      setSkeleton(true);
+      setPredicting(true);
       const dataArr = newData.split(" "); // turn ML output to array [class, score]
       const pClass = dataArr[0];
       const pScore = String(new Decimal(dataArr[1] * 100).toPrecision(4));
-      setOutputClass(pClass);
-      setOutputScore(pScore);
+      setTimeout(() => {
+        setOutputClass(pClass);
+        setOutputScore(pScore);
+        setSkeleton(false);
+        setPredicting(false);
+      }, 4000);
     }
   };
 
-/*   // runs when score is updated
-  useEffect(() => {
-    console.log("updated outputScore", outputScore);
-    !outputScore ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
-    parseInt(outputScore) >= 90 ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
-  }, [outputScore]); */
-
-    // runs when score is updated
+  /*   // runs when score is updated
     useEffect(() => {
-      console.log("updated outputScore", outputClass);
-      !outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
-      outputClass == "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
-    }, [outputClass]);
+      console.log("updated outputScore", outputScore);
+      !outputScore ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
+      parseInt(outputScore) >= 90 ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+    }, [outputScore]); */
+
+
+
+  // runs when score is updated
+  useEffect(() => {
+    console.log("updated outputScore", outputClass);
+    //!outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
+    outputClass == "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+  }, [outputClass]);
 
   // receives output text from Tensorflow.js and runs the function above
   // output format: `${class} ${score}`
@@ -86,6 +97,7 @@ const Main = () => {
           scoreData={outputScore}
           updateOutputData={updateOutputComponent}
           loading={predicting}
+          loader={skeleton}
         />
       </Stack>
     </>

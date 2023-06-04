@@ -32,7 +32,7 @@ const Uploader = (props) => {
   const [location, setLocation] = useState(null);
   const [locationAddress, setLocationAddress] = useState("");
 
-  const [text, setText] = useState("");
+  
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
