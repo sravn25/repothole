@@ -11,16 +11,22 @@ const useStyles = createStyles((theme) => ({
 }));
 
 /*
-  expected output
-  Result: No Pothole Detected / Pothole Detected
-  Confidence: 85%
-*/
+ expected output:
 
-/* Output data looks like this  {
+      pothole {
+        result: potholes detected
+        confidential level: 99.9%
+        location: xxx
+        reported date: 5/6/2023 10:31pm
+        repair status: submitted to JKR for review
+      }
 
-  output format: `${class} ${score}` (Tensorflow.js [line 101-102])
+      plain {
+        result: no potholes detected
+        confidential level: 99.9%
+        location: xxx
+      }
 
-  }
 */
 
 // terminal based output for machine learning
@@ -30,29 +36,24 @@ const Output = (props) => {
   return (
     /* (remove when done)
 
-        1. Alert user if pothole detected (top priority) (done)
-        2. Create a template for output display
-        3. Clean output data whenever preview image is removed (done)
-        4. Loading animation when predicting
+        1. Create a template for output display 
+        2. Loading animation when predicting
+        3. Add a map that shows the location of the pothole
 
     */
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Results</Text>
+        <Text>Result</Text>
         {props.loading ? (
-          <>
-            {props.loader ? (
-              <SkeletonLoader />
-            ) : (
-              <Text>Please upload an image to start detection.</Text>
-            )}
-          </>
+          <div>
+            <Text>Please upload an image to start detection.</Text>
+          </div>
         ) : (
-          <>
+          <div>
             <Text>{props.classData}</Text>
             <Text>{props.scoreData}</Text>
-          </>
+          </div>
         )}
       </Paper>
     </>

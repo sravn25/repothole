@@ -152,6 +152,7 @@ const Dashboard = () => {
     /* (remove when done)
 
         1. Redesign to be consistent with frontend
+        2. Sorting function
 
     */
 

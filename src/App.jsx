@@ -10,6 +10,13 @@ import { AppShell } from "@mantine/core";
 function App() {
 
   return (
+
+    /* (remove when done)
+
+        1. Rearrange the layout 
+
+    */
+
     <Router>
       <MantineProvider withGlobalStyles withNormalizeCSS>
         <AppShell padding="md">

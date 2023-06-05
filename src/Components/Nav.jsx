@@ -46,7 +46,9 @@ const Nav = () => {
     location.pathname === "/" ? setDashboard(false) : setDashboard(true);
   }, [location]); // checks if in dashboard or not
 
-
+  /* 
+  fetch data function
+  */
   // requires actual data
   const potholeUpdates = [
     { id: 0, location: "x", time: "x" },
@@ -72,8 +74,7 @@ const Nav = () => {
     /* (remove when done)
 
         1. Display the pothole updates properly (fetching from database and appending them to an array)
-        2. Limit the pothole updates at 15 updates
-        3.
+        2. Limit the pothole updates at 15 updates (use map)
 
     */
 

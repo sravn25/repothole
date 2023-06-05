@@ -32,7 +32,6 @@ const Uploader = (props) => {
   const [location, setLocation] = useState(null);
   const [locationAddress, setLocationAddress] = useState("");
 
-  
   // sets preview when file is uploaded
   useEffect(() => {
     let objectURL = null;
@@ -128,6 +127,15 @@ const Uploader = (props) => {
   }, []);
 
   return (
+
+    /* (remove when done)
+
+        1. Disable Upload button if location not shared 
+        2. Disable Upload button if model not loadaed (is disabled, but button should be grey colour)
+        3. If pothole, upload to Firebase
+
+    */
+
     <>
       <Container size="lg">
         <Paper
@@ -172,8 +180,6 @@ const Uploader = (props) => {
           Picked file: {file.name}
         </Text>
       )}
-
-
 
       {location /* display location (remove this after testing) */ ? (
         <Text>Location: {locationAddress}</Text>

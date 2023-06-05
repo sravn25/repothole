@@ -31,24 +31,15 @@ const Main = () => {
         setOutputScore(pScore);
         setSkeleton(false);
         setPredicting(false);
-      }, 4000);
+      }, 2500);
     }
   };
-
-  /*   // runs when score is updated
-    useEffect(() => {
-      console.log("updated outputScore", outputScore);
-      !outputScore ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
-      parseInt(outputScore) >= 90 ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
-    }, [outputScore]); */
-
-
 
   // runs when score is updated
   useEffect(() => {
     console.log("updated outputScore", outputClass);
     //!outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
-    outputClass == "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+    outputClass === "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
   }, [outputClass]);
 
   // receives output text from Tensorflow.js and runs the function above
@@ -58,20 +49,6 @@ const Main = () => {
     if (data === undefined) return; // if no data
     else updateOutputComponent(data);
   };
-
-  /*
-  to complete 
-  */
-  // clean output
-  const removeOutput = () => {
-    updateOutputComponent("");
-  };
-
-
-  /*
-    if no prediction is going on,
-    clean the output 
-  */
 
   return (
     <>
