@@ -18,6 +18,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+
 const Uploader = (props) => {
   const { classes } = useStyles();
 
@@ -130,8 +131,8 @@ const Uploader = (props) => {
 
     /* (remove when done)
 
-        1. Disable Upload button if location not shared 
-        2. Disable Upload button if model not loadaed (is disabled, but button should be grey colour)
+        1. Disable Upload button if location not shared (done)
+        2. Disable Upload button if model not loadaed (is disabled, but button should be grey colour) (done)
         3. If pothole, upload to Firebase
 
     */
@@ -167,9 +168,9 @@ const Uploader = (props) => {
         <FileButton
           onChange={setFile}
           accept="image/png, image/jpeg"
-          disabled={!loaded || !locationAddress}
+          disabled={!loaded}
         >
-          {(props) => <Button {...props}>Upload Image</Button>}
+          {(props) => <Button {...props} disabled={!locationAddress} >Upload Image</Button>}
         </FileButton>
         <Button disabled={!file} color="red" onClick={clearFile}>
           Remove

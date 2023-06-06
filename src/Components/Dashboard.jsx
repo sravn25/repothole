@@ -1,38 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
-// import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-// import { saveAs } from 'file-saver';
-import { jsPDF } from "jspdf";
 import {
   Image,
 } from "@mantine/core";
 
-const generatePDFData = async (id, imageUrl, rowData) => {
-  const doc = new jsPDF();
-
-  // Add image
-  if (imageUrl) {
-    try {
-      const img = await loadImage(imageUrl);
-
-      const imgWidth = 150; // Set the desired width of the image
-      const imgHeight = 100; // Calculate the proportional height based on the width
-
-      doc.addImage(img, "JPEG", 10, 80, imgWidth, imgHeight); // Adjust the position (10, 80) and size (imgWidth, imgHeight) as needed
-    } catch (error) {
-      console.error("Error loading image:", error);
-    }
-  }
-
-  doc.text("ID: " + id, 10, 10);
-  doc.text("Location: " + rowData.location, 10, 20);
-  doc.text("Report Date: " + rowData.reportDate, 10, 30);
-  doc.text("Confidential Level: " + rowData.confidentialLevel, 10, 40);
-  doc.text("Repair Status: " + rowData.repairStatus, 10, 50);
-  doc.text("Repair Completion Date: " + rowData.repairCompletionDate, 10, 60);
-
-  doc.save(`pothole_report${id}.pdf`); // Download the PDF with a specified file name
-};
 
 const loadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -143,16 +114,14 @@ const Dashboard = () => {
     setData(sortedDataObj);
   };
 
-  const handleDownloadPDF = (id, rowData) => {
-    generatePDFData(id, rowData.imageUrl, rowData);
-  };
 
   return (
 
     /* (remove when done)
 
         1. Redesign to be consistent with frontend
-        2. Sorting function
+        2. Sorting function (done)
+        3. report function (CSV)
 
     */
 
@@ -168,15 +137,6 @@ const Dashboard = () => {
               }}
             >
               No
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "30px",
-                paddingLeft: "30px",
-              }}
-            >
-              ID
             </th>
             <th
               style={{
@@ -292,24 +252,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              Repair Completion Date
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              Action
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -321,7 +263,6 @@ const Dashboard = () => {
                 <td scope="row" style={{ textAlign: "center" }}>
                   {index + 1}
                 </td>
-                <td style={{ textAlign: "center" }}>{data[id].id}</td>
                 <td style={{ textAlign: "center" }}>
                   {imageUrl && (
                     <img
@@ -348,14 +289,6 @@ const Dashboard = () => {
                     <option value="Completed">Completed</option>
                     <option value="Cancelled">Cancelled</option>
                   </select>
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  {data[id].repairCompletionDate}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  <button onClick={() => handleDownloadPDF(id, data[id])}>
-                    Download PDF
-                  </button>
                 </td>
               </tr>
             );
