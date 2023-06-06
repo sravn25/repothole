@@ -5,6 +5,7 @@ import Updates from "./Updates";
 import Uploader from "./Uploader";
 import Output from "./Output";
 import Dashboard from "./Dashboard";
+import Main from "./Main";
 
 function Layout() {
   return (
@@ -27,7 +28,11 @@ function Layout() {
           </ScrollArea>
         </Grid.Col>
         <Grid.Col span={6}>
-          <Uploader />
+          {/*
+						Need to split Main into Uploader and Output
+					*/}
+
+          <Main />
         </Grid.Col>
         <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
           <Output />
@@ -48,7 +53,7 @@ export function DashboardLayout() {
       }}
     >
       <HeaderAction />
-			<Dashboard />
+      <Dashboard />
     </div>
   );
 }
