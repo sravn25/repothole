@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { createStyles, Paper, Text } from "@mantine/core";
-// import Decimal from "decimal.js";
 import { SkeletonLoader } from "./Loader";
-import { GoogleMap, Marker } from "@react-google-maps/api"; // Import GoogleMap and Marker from @react-google-maps/api
+// import { GoogleMap, Marker } from "@react-google-maps/api"; // Import GoogleMap and Marker from @react-google-maps/api
 
 const useStyles = createStyles((theme) => ({
   terminalBox: {
@@ -11,8 +10,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-
-
+/*
 // map function
 const Map = ({ location }) => {
   const mapContainerStyle = {
@@ -35,6 +33,7 @@ const Map = ({ location }) => {
     </GoogleMap>
   );
 };
+*/
 
 /*
  expected output:
@@ -55,8 +54,6 @@ const Map = ({ location }) => {
 
 */
 
-
-
 // terminal based output for machine learning
 const Output = (props) => {
   const { classes } = useStyles();
@@ -72,22 +69,28 @@ const Output = (props) => {
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Result</Text>
+        <Text>Results</Text>
         {props.loading ? (
-          <div>
-            <Text>Please upload an image to start detection.</Text>
-          </div>
+          <>
+            {props.loader ? (
+              <SkeletonLoader />
+            ) : (
+              <Text>Please upload an image to start detection.</Text>
+            )}
+          </>
         ) : (
-          <div>
+          <>
             <Text>{props.classData}</Text>
             <Text>{props.scoreData}</Text>
-          </div>
+          </>
         )}
       </Paper>
-      <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Google Map</Text>
-        {props.location && <Map location={props.location} />} {/* Render the Map component with the location prop */}
-      </Paper>
+      {/*
+        <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
+          <Text>Google Map</Text>
+          {props.location && <Map location={props.location} />} {/* Render the Map component with the location prop 
+        </Paper>
+      */}
     </>
   );
 };

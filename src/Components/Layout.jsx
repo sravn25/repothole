@@ -15,12 +15,20 @@ function Layout() {
   const [showAlert, setShowAlert] = useState(true);
   const [predicting, setPredicting] = useState(true);
   const [skeleton, setSkeleton] = useState(true);
+  const [showMap, setShowMap] = useState(false);
+
+  const [center, setCenter] = useState({
+    latitude: null,
+    longitude: null,
+    address: "",
+  });
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
     if (newData === "") {
       setOutputClass("");
       setOutputScore("");
+      setShowMap(false);
       setPredicting(true);
       setSkeleton(false);
       return;
@@ -33,6 +41,7 @@ function Layout() {
       setTimeout(() => {
         setOutputClass(pClass);
         setOutputScore(pScore);
+        setShowMap(true);
         setSkeleton(false);
         setPredicting(false);
       }, 2500);
@@ -44,6 +53,7 @@ function Layout() {
     console.log("updated outputScore", outputClass);
     //!outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
     outputClass === "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+    outputClass === "potholes" ? setShowMap(true) : setShowMap(false); //
   }, [outputClass]);
 
   // receives output text from Tensorflow.js and runs the function above
@@ -57,6 +67,17 @@ function Layout() {
   // close alert
   const closeAlert = () => {
     setShowAlert(false);
+  };
+
+  // get coordinate and address from Uploader.jsx
+  const retrieveLocation = (coordinate, address) => {
+    console.log(`received coordinate: ${coordinate}`);
+    console.log(`received address: ${address}`);
+    setCenter({
+      latitude: coordinate[0],
+      longitude: coordinate[1],
+      address: address,
+    });
   };
 
   return (
@@ -85,7 +106,7 @@ function Layout() {
             classData={outputClass}
             scoreData={outputScore}
           />
-          <Uploader sendOutput={handleOutput} />
+          <Uploader sendOutput={handleOutput} sendLocation={retrieveLocation} />
         </Grid.Col>
         <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
           <Output
@@ -95,7 +116,7 @@ function Layout() {
             loading={predicting}
             loader={skeleton}
           />
-          <MapDisplay />
+          <MapDisplay showMap={showMap} location={center} />
         </Grid.Col>
       </Grid>
     </div>

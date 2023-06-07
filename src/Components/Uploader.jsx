@@ -79,13 +79,17 @@ const Uploader = (props) => {
     else {
       props.sendOutput("");
       await identify(objectURL); // run prediction in Tensorflow.js
-      props.sendOutput(getOutput()); // send output to Main.jsx
+      props.sendOutput(getOutput()); // send output to Layout.jsx
+      props.sendLocation([location.coords.latitude, location.coords.longitude], locationAddress);
     }
   };
 
   // fetch latitute & longtitude
   const successCallback = (position) => {
     setLocation(position);
+    console.log("Position:\n");
+    console.log("Latitude:", position.coords.latitude);
+    console.log("Longitude:", position.coords.longitude);
 
     // convert latitute & longtitude to human readable address
     fetch(
@@ -99,6 +103,7 @@ const Uploader = (props) => {
         console.log("Error fetching location address:", error);
       });
   };
+
   // location function - error call back
   const errorCallback = (error) => {
     console.log(error);
