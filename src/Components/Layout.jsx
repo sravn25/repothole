@@ -1,13 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, ScrollArea } from "@mantine/core";
 import { HeaderAction } from "./Header";
 import Updates from "./Updates";
+import Notification from "./Notification";
 import Uploader from "./Uploader";
 import Output from "./Output";
 import Dashboard from "./Dashboard";
-import Main from "./Main";
+import MapDisplay from "./MapDisplay";
+import Decimal from "decimal.js";
 
 function Layout() {
+  const [outputClass, setOutputClass] = useState("");
+  const [outputScore, setOutputScore] = useState("");
+  const [showAlert, setShowAlert] = useState(true);
+  const [predicting, setPredicting] = useState(true);
+  const [skeleton, setSkeleton] = useState(true);
+
+  // updates output text in Output.jsx
+  const updateOutputComponent = (newData) => {
+    if (newData === "") {
+      setOutputClass("");
+      setOutputScore("");
+      setPredicting(true);
+      setSkeleton(false);
+      return;
+    } else {
+      setSkeleton(true);
+      setPredicting(true);
+      const dataArr = newData.split(" "); // turn ML output to array [class, score]
+      const pClass = dataArr[0];
+      const pScore = String(new Decimal(dataArr[1] * 100).toPrecision(4));
+      setTimeout(() => {
+        setOutputClass(pClass);
+        setOutputScore(pScore);
+        setSkeleton(false);
+        setPredicting(false);
+      }, 2500);
+    }
+  };
+
+  // runs when score is updated
+  useEffect(() => {
+    console.log("updated outputScore", outputClass);
+    //!outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
+    outputClass === "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
+  }, [outputClass]);
+
+  // receives output text from Tensorflow.js and runs the function above
+  // output format: `${class} ${score}`
+  const handleOutput = (data) => {
+    console.log(`received data: ${data}`);
+    if (data === undefined) return; // if no data
+    else updateOutputComponent(data);
+  };
+
+  // close alert
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+
   return (
     <div
       style={{
@@ -28,14 +79,23 @@ function Layout() {
           </ScrollArea>
         </Grid.Col>
         <Grid.Col span={6}>
-          {/*
-						Need to split Main into Uploader and Output
-					*/}
-
-          <Main />
+          <Notification
+            show={showAlert}
+            close={closeAlert}
+            classData={outputClass}
+            scoreData={outputScore}
+          />
+          <Uploader sendOutput={handleOutput} />
         </Grid.Col>
         <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
-          <Output />
+          <Output
+            classData={outputClass}
+            scoreData={outputScore}
+            updateOutputData={updateOutputComponent}
+            loading={predicting}
+            loader={skeleton}
+          />
+          <MapDisplay />
         </Grid.Col>
       </Grid>
     </div>

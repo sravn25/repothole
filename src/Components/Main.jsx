@@ -1,3 +1,9 @@
+/*
+  !!!
+  Obsolete  
+  !!!
+*/
+
 import React, { useState, useEffect } from "react";
 import Uploader from "./Uploader";
 import Output from "./Output";

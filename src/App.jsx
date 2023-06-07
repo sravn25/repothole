@@ -7,7 +7,11 @@ import Layout, { DashboardLayout } from "./Components/Layout";
 function App() {
   return (
     <Router>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{ colorScheme: "dark" }}
+      >
         <Switch>
           <Route path="/admin">
             <DashboardLayout />

@@ -23,7 +23,7 @@ const useStyles = createStyles((theme) => ({
   },
   logo: {
     textDecoration: "none",
-    color: "black",
+    color: "white",
     display: "flex",
   },
   link: {
