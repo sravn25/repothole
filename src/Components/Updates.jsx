@@ -9,7 +9,7 @@ const Updates = () => {
 
   // tooltip function
   // input data = attribute fetched from firebase
-  // output data = report date and repair status
+  // output data = confidential level, report date and repair status
   const renderTooltipContent = (item) => (
     <div>
       <Text>confidential Level: {item.confidentialLevel}</Text>
@@ -41,7 +41,7 @@ const Updates = () => {
   return (
     /* (remove when done)
 
-        1. Limit the pothole updates at 15 updates (use map)
+        1. Limit the pothole updates at 15 updates (use map) (done, refer to line 30)
 
     */
 
