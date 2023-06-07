@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
-import {
-  Image,
-} from "@mantine/core";
+import { CSVLink } from 'react-csv';
 
-
-const loadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url;
-  });
-};
 
 const Dashboard = () => {
   const [data, setData] = useState({});
+  const [csvdata, setCSVData] = useState([]);  // to store fetched data into array before turn into csv
   const [imageUrl, setImageUrl] = useState("");
   const [sortConfig, setSortConfig] = useState({
     field: null,
@@ -31,11 +21,11 @@ const Dashboard = () => {
       if (snapshot.exists()) {
         const fetchedData = snapshot.val();
         setData({ ...fetchedData });
+        setCSVData(Object.values(fetchedData));  // save data into array (for csv function)
         // Set the image URL
         setImageUrl(fetchedData.imageURL);
       } else {
         setData({});
-        setImageUrl("");
       }
     };
 
@@ -43,7 +33,7 @@ const Dashboard = () => {
 
     return () => {
       setData({});
-      setImageUrl("");
+      setCSVData([]);
     };
   }, []);
 
@@ -119,184 +109,191 @@ const Dashboard = () => {
 
     /* (remove when done)
 
-        1. Redesign to be consistent with frontend
+        1. Redesign to be consistent with frontend (focus this)
         2. Sorting function (done)
-        3. report function (CSV)
+        3. report function (CSV) (done)
 
     */
 
     <div>
-      <table>
-        <thead>
-          <tr>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "30px",
-                paddingLeft: "30px",
-              }}
-            >
-              No
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              Image
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span>Location</span>
-                <div>
-                  <button
-                    onClick={() => sortData("location")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
+        <CSVLink
+          data={csvdata}
+          filename={"pothole_report.csv"}
+          target="_blank"
+        >
+          Download CSV
+        </CSVLink>
+        <table>
+          <thead>
+            <tr>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "30px",
+                  paddingLeft: "30px",
+                }}
+              >
+                No
+              </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "40px",
+                  paddingLeft: "40px",
+                }}
+              >
+                Image
+              </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "40px",
+                  paddingLeft: "40px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span>Location</span>
+                  <div>
+                    <button
+                      onClick={() => sortData("location")}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
                     >
-                      <path d="M8 2l4 4H4L8 2z" />
-                      <path d="M8 14l-4-4h8l-4 4z" />
-                    </svg>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 2l4 4H4L8 2z" />
+                        <path d="M8 14l-4-4h8l-4 4z" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span>Report Date</span>
-                <div>
-                  <button
-                    onClick={() => sortData("reportDate")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
+              </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "40px",
+                  paddingLeft: "40px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span>Report Date</span>
+                  <div>
+                    <button
+                      onClick={() => sortData("reportDate")}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
                     >
-                      <path d="M8 2l4 4H4L8 2z" />
-                      <path d="M8 14l-4-4h8l-4 4z" />
-                    </svg>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 2l4 4H4L8 2z" />
+                        <path d="M8 14l-4-4h8l-4 4z" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              Confidential Level
-            </th>
-            <th
-              style={{
-                textAlign: "center",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span>Repair Status</span>
-                <div>
-                  <button
-                    onClick={() => sortData("repairStatus")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
+              </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "40px",
+                  paddingLeft: "40px",
+                }}
+              >
+                Confidential Level
+              </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  paddingRight: "40px",
+                  paddingLeft: "40px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span>Repair Status</span>
+                  <div>
+                    <button
+                      onClick={() => sortData("repairStatus")}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
                     >
-                      <path d="M8 2l4 4H4L8 2z" />
-                      <path d="M8 14l-4-4h8l-4 4z" />
-                    </svg>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 2l4 4H4L8 2z" />
+                        <path d="M8 14l-4-4h8l-4 4z" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(data).map((id, index) => {
-            const imageUrl = data[id].Url;
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(data).map((id, index) => {
+              const imageUrl = data[id].Url;
 
-            return (
-              <tr key={id}>
-                <td scope="row" style={{ textAlign: "center" }}>
-                  {index + 1}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      alt="Pothole"
-                      width="150"
-                      height="100"
-                    />
-                  )}
-                </td>
-                <td style={{ textAlign: "center" }}>{data[id].location}</td>
-                <td style={{ textAlign: "center" }}>{data[id].reportDate}</td>
-                <td style={{ textAlign: "center" }}>
-                  {data[id].confidentialLevel}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  <select
-                    value={data[id].repairStatus}
-                    onChange={(event) => handleRepairStatusChange(id, event)}
-                  >
-                    <option value="Under Review">Under Review</option>
-                    <option value="Awaiting Approval">Awaiting Approval</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
+              return (
+                <tr key={id}>
+                  <td scope="row" style={{ textAlign: "center" }}>
+                    {index + 1}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    {imageUrl && (
+                      <img
+                        src={imageUrl}
+                        alt="Pothole"
+                        width="150"
+                        height="100"
+                      />
+                    )}
+                  </td>
+                  <td style={{ textAlign: "center" }}>{data[id].location}</td>
+                  <td style={{ textAlign: "center" }}>{data[id].reportDate}</td>
+                  <td style={{ textAlign: "center" }}>
+                    {data[id].confidentialLevel}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <select
+                      value={data[id].repairStatus}
+                      onChange={(event) => handleRepairStatusChange(id, event)}
+                    >
+                      <option value="Under Review">Under Review</option>
+                      <option value="Awaiting Approval">Awaiting Approval</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      );
 };
 
-export default Dashboard;
+      export default Dashboard;
