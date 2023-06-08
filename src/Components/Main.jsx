@@ -11,12 +11,14 @@ import { Stack, Alert, Paper } from "@mantine/core";
 import { TbAlertCircle } from "react-icons/tb";
 import Decimal from "decimal.js";
 
+
 const Main = () => {
   const [outputClass, setOutputClass] = useState("");
   const [outputScore, setOutputScore] = useState("");
   const [showAlert, setShowAlert] = useState(true);
   const [predicting, setPredicting] = useState(true);
   const [skeleton, setSkeleton] = useState(true);
+
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
