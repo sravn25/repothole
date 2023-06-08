@@ -8,6 +8,7 @@ import Output from "./Output";
 import Dashboard from "./Dashboard";
 import MapDisplay from "./MapDisplay";
 import Decimal from "decimal.js";
+import alertSound from "../sounds/alertsound.mp3";
 
 function Layout() {
   const [outputClass, setOutputClass] = useState("");
@@ -16,6 +17,11 @@ function Layout() {
   const [predicting, setPredicting] = useState(true);
   const [skeleton, setSkeleton] = useState(true);
   const [showMap, setShowMap] = useState(false);
+  const sound = new Audio(alertSound);
+
+  const playAlertSound = () => {
+    sound.play();
+  };
 
   const [center, setCenter] = useState({
     latitude: null,
@@ -44,6 +50,7 @@ function Layout() {
         setShowMap(true);
         setSkeleton(false);
         setPredicting(false);
+        playAlertSound();
       }, 2500);
     }
   };
