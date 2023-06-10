@@ -28,6 +28,7 @@ function Layout() {
     longitude: null,
     address: "",
   });
+  const [date, setDate] = useState("");
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
@@ -87,6 +88,12 @@ function Layout() {
     });
   };
 
+  // get date from Uploader.jsx
+  const retrieveDate = (date) => {
+    console.log(`received date: ${date}`);
+    setDate(date);
+  }
+
   return (
     <div
       style={{
@@ -113,7 +120,7 @@ function Layout() {
             classData={outputClass}
             scoreData={outputScore}
           />
-          <Uploader sendOutput={handleOutput} sendLocation={retrieveLocation} />
+          <Uploader sendOutput={handleOutput} sendLocation={retrieveLocation} sendDate={retrieveDate} />
         </Grid.Col>
         <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
           <Output
@@ -123,7 +130,7 @@ function Layout() {
             loading={predicting}
             loader={skeleton}
           />
-          <MapDisplay showMap={showMap} location={center} />
+          <MapDisplay showMap={showMap} location={center} date={date}/>
         </Grid.Col>
       </Grid>
     </div>

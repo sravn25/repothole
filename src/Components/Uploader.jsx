@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { load, identify, getOutput } from "../Modules/Tensorflow";
+import { DateTime } from "luxon";
 import {
   createStyles,
   Center,
@@ -17,7 +18,6 @@ const useStyles = createStyles((theme) => ({
     // height: "30vh",
   },
 }));
-
 
 const Uploader = (props) => {
   const { classes } = useStyles();
@@ -80,7 +80,11 @@ const Uploader = (props) => {
       props.sendOutput("");
       await identify(objectURL); // run prediction in Tensorflow.js
       props.sendOutput(getOutput()); // send output to Layout.jsx
-      props.sendLocation([location.coords.latitude, location.coords.longitude], locationAddress);
+      props.sendLocation(
+        [location.coords.latitude, location.coords.longitude],
+        locationAddress
+      );
+      props.sendDate(DateTime.now().toFormat("dd-MM-yyyy"));
     }
   };
 
@@ -133,7 +137,6 @@ const Uploader = (props) => {
   }, []);
 
   return (
-
     /* (remove when done)
 
         1. Disable Upload button if location not shared (done)
@@ -175,7 +178,11 @@ const Uploader = (props) => {
           accept="image/png, image/jpeg"
           disabled={!loaded}
         >
-          {(props) => <Button {...props} disabled={!locationAddress} >Upload Image</Button>}
+          {(props) => (
+            <Button {...props} disabled={!locationAddress}>
+              Upload Image
+            </Button>
+          )}
         </FileButton>
         <Button disabled={!file} color="red" onClick={clearFile}>
           Remove
