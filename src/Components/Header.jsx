@@ -9,7 +9,7 @@ import {
   rem,
   Image,
 } from "@mantine/core";
-import logo from "../images/pothole.png";
+import logo from "../images/Logo.png";
 import { Link, useLocation } from "react-router-dom";
 
 const HEADER_HEIGHT = rem(60);
