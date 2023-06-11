@@ -85,6 +85,7 @@ const Uploader = (props) => {
         locationAddress
       );
       props.sendDate(DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")); // date and time format
+      props.sendFile(file);
     }
   };
 
