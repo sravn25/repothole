@@ -107,8 +107,6 @@ const Dashboard = () => {
     /* (remove when done)
 
         1. Redesign to be consistent with frontend (focus this)
-        2. Sorting function (done)
-        3. report function (CSV) (done)
 
     */
 
@@ -245,7 +243,6 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {/*
             {Object.keys(data).map((id, index) => {
               const imageUrl = data[id].Url;
 
@@ -284,7 +281,6 @@ const Dashboard = () => {
                 </tr>
               );
             })}
-          */}
         </tbody>
       </table>
     </div>
