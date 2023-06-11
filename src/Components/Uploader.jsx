@@ -84,7 +84,8 @@ const Uploader = (props) => {
         [location.coords.latitude, location.coords.longitude],
         locationAddress
       );
-      props.sendDate(DateTime.now().toFormat("dd-MM-yyyy"));
+      props.sendDate(DateTime.now().toFormat("dd-MM-yyyy HH:mm:ss")); // date and time format
+      props.sendFile(file);
     }
   };
 
@@ -139,9 +140,7 @@ const Uploader = (props) => {
   return (
     /* (remove when done)
 
-        1. Disable Upload button if location not shared (done)
-        2. Disable Upload button if model not loadaed (is disabled, but button should be grey colour) (done)
-        3. If pothole, upload to Firebase
+        1. If pothole, upload to Firebase
 
     */
 

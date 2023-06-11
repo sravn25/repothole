@@ -10,6 +10,11 @@ import MapDisplay from "./MapDisplay";
 import Decimal from "decimal.js";
 import alertSound from "../sounds/alertsound.mp3";
 
+import { storage, database } from "../Modules/Firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref as databaseRef, set, push } from "firebase/database";
+import { v4 } from "uuid";
+
 function Layout() {
   const [outputClass, setOutputClass] = useState("");
   const [outputScore, setOutputScore] = useState("");
@@ -29,6 +34,8 @@ function Layout() {
     address: "",
   });
   const [date, setDate] = useState("");
+  const [file, setFile] = useState("");
+  const [repairStatus, setRepairStatus] = useState("");
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
@@ -88,11 +95,62 @@ function Layout() {
     });
   };
 
+  // get file from Uploader.jsx
+  const retrieveFile = (file) => {
+    console.log(`received date: ${file}`);
+    setFile(file);
+  };
+
   // get date from Uploader.jsx
   const retrieveDate = (date) => {
     console.log(`received date: ${date}`);
     setDate(date);
-  }
+  };
+
+  // save data to firebase
+  useEffect(() => {
+    if (file) {
+      if (outputClass === "potholes") {
+        // only save pothole's data to firebase
+        setRepairStatus("Submitted to JKR for review");
+        // set attributes that need to be saved to firebase
+        const records = [
+          {
+            file: file, // image
+            location: center.address, // fetched location address
+            reportDate: date, // fetched date and time
+            confidentialLevel: outputScore, // output from tensorflow.js
+            repairStatus: "Under Review", // default status
+          },
+        ];
+        // create save record function
+        // output = alert ('data saved successfully')
+        const uploadAndSavedRecord = async (record) => {
+          try {
+            const { file, ...data } = record;
+            const imageRef = ref(storage, `images/${file.name}_${v4()}`); //set image file name
+            await uploadBytes(imageRef, file); // upload image to firebase storage
+            alert("Image uploaded successfully");
+            const url = await getDownloadURL(imageRef); // convert image into downloadURL, since firebase realtime database cant directly save image
+            const newRecordRef = push(databaseRef(database, "pothole"));
+            await set(newRecordRef, {
+              Url: url,
+              ...data,
+            }); // push data to firebase realtime database
+            alert("Data saved successfully");
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            // Handle the error appropriately
+          }
+        };
+        // call uploadAndSaveRecord function for each record
+        records.forEach(uploadAndSavedRecord);
+      } else if (outputClass === "plain") {
+        setDate("N/A");
+        setRepairStatus("N/A");
+      }
+    }
+  }, [file, outputClass, outputScore]);
 
   return (
     <div
@@ -120,17 +178,25 @@ function Layout() {
             classData={outputClass}
             scoreData={outputScore}
           />
-          <Uploader sendOutput={handleOutput} sendLocation={retrieveLocation} sendDate={retrieveDate} />
+          <Uploader
+            sendOutput={handleOutput}
+            sendLocation={retrieveLocation}
+            sendDate={retrieveDate}
+            sendFile={retrieveFile}
+          />
         </Grid.Col>
         <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
           <Output
-            classData={outputClass}
+            classData={"Class : " + outputClass}
             scoreData={outputScore}
+            location={center.address}
+            reportDate={date}
+            repairStatus={repairStatus}
             updateOutputData={updateOutputComponent}
             loading={predicting}
             loader={skeleton}
           />
-          <MapDisplay showMap={showMap} location={center} date={date}/>
+          <MapDisplay showMap={showMap} location={center} date={date} />
         </Grid.Col>
       </Grid>
     </div>
