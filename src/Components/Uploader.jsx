@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { load, identify, getOutput } from "../Modules/Tensorflow";
-import { DateTime } from "luxon";
 import {
   createStyles,
   Center,
@@ -84,7 +83,17 @@ const Uploader = (props) => {
         [location.coords.latitude, location.coords.longitude],
         locationAddress
       );
-      props.sendDate(DateTime.now().toFormat("dd-MM-yyyy HH:mm:ss")); // date and time format
+      const currentDate = new Date(); //get date and time form user local laptop
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      };
+      const currentDateTimeString = currentDate.toLocaleString('zh-CN', options); //set display format of date and time
+      props.sendDate(currentDateTimeString);
       props.sendFile(file);
     }
   };
