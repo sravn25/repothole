@@ -119,8 +119,9 @@ function Layout() {
             file: file, // image
             location: center.address, // fetched location address
             reportDate: date, // fetched date and time
-            confidentialLevel: outputScore, // output from tensorflow.js
+            confidentialLevel: outputScore, // accuracy rate
             repairStatus: "Under Review", // default status
+            readStatus: "false",  // read status (false = unread; true = read)
           },
         ];
         // create save record function

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { CSVLink } from "react-csv";
+import { Paper, Alert } from "@mantine/core";
+import { TbAlertCircle } from "react-icons/tb";
+
+
 
 const Dashboard = () => {
   const [data, setData] = useState({});
@@ -10,8 +14,12 @@ const Dashboard = () => {
     field: null,
     direction: null,
   });
+  const [unreadCount, setUnreadCount] = useState(0); // to store unread report
 
-  // fetch data bah
+
+
+
+  // fetch data & count number of unread report
   useEffect(() => {
     const database = getDatabase();
     const potholeRef = ref(database, "pothole");
@@ -23,8 +31,16 @@ const Dashboard = () => {
         setCSVData(Object.values(fetchedData)); // save data into array (for csv function)
         // Set the image URL
         setImageUrl(fetchedData.imageURL);
+
+        // Calculate the unread report based on readStatus value (false)
+        const count = Object.values(fetchedData).filter(
+          (item) => item.readStatus === "false"
+        ).length;
+        setUnreadCount(count);
+
       } else {
         setData({});
+        setUnreadCount(0);
       }
     };
 
@@ -36,38 +52,53 @@ const Dashboard = () => {
     };
   }, []);
 
-  // Update data function
+
+  // change readStatus value
+  const updateReadStatus = () => {
+    const updatedData = { ...data };
+    Object.keys(updatedData).forEach((id) => {
+      if (updatedData[id].readStatus === "false") {
+        updatedData[id].readStatus = "true";
+      }
+    });
+    setData(updatedData);
+    updateReadData(updatedData);
+  };
+
+
+  // update readStatus to firebase
+  const updateReadData = (updatedData) => {
+    const database = getDatabase();
+    const potholeRef = ref(database, "pothole");
+    update(potholeRef, updatedData)
+      .then(() => {
+        console.log("READ Data updated successfully");
+      })
+      .catch((error) => {
+        console.error("Error updating READ data:", error);
+      });
+  };
+
+
+
+  // Update repairStatus value to firebase
   const updateData = (id, repairStatus) => {
     const newRepairStatus = { ...data[id], repairStatus }; // Modify the data as needed
-
-    const currentDate = new Date();
-    const currentDateTimeString = currentDate.toLocaleString();
-    const newRepairCompletionDate = {
-      ...data[id],
-      repairCompletionDate: currentDateTimeString,
-    };
-    const removeRepairCompletionDate = {
-      ...data[id],
-      repairCompletionDate: " N/A ",
-    };
 
     const database = getDatabase();
     const potholeRef = ref(database, `pothole/${id}`);
     update(potholeRef, newRepairStatus)
       .then(() => {
-        if (repairStatus === "Completed") {
-          update(potholeRef, newRepairCompletionDate);
-          alert("Data updated successfully");
-        } else if (repairStatus !== "Completed") {
-          update(potholeRef, removeRepairCompletionDate);
-          alert("Data updated successfully");
-        }
+        alert("Data updated successfully");
       })
       .catch((error) => {
         alert("Error updating data:", error);
       });
   };
 
+
+
+  //  change repair status dropdown box value
   const handleRepairStatusChange = (id, event) => {
     const selectedStatus = event.target.value;
     const newData = { ...data };
@@ -76,6 +107,9 @@ const Dashboard = () => {
     updateData(id, selectedStatus);
   };
 
+
+
+  // sorting function
   const sortData = (field) => {
     let direction = "asc";
 
@@ -103,19 +137,40 @@ const Dashboard = () => {
     setData(sortedDataObj);
   };
 
+
+
+
+
+
   return (
     /* (remove when done)
 
         1. Redesign to be consistent with frontend (focus this)
         2. Sorting function (done)
         3. report function (CSV) (done)
+        4. notification for JKR (done)
 
     */
 
     <div>
+      {unreadCount >= 1 && (
+        <Paper style={{ height: "100px" }}>
+          <Alert
+            title="Notification"
+            icon={<TbAlertCircle size="1rem" />}
+            withCloseButton
+            closeButtonLabel="Notification alert"
+          >
+            {unreadCount} new pothole reported. <button onClick={updateReadStatus}>Mark as Read</button>
+          </Alert>
+        </Paper>
+      )}
+
       <CSVLink data={csvdata} filename={"pothole_report.csv"} target="_blank">
         Download CSV
       </CSVLink>
+
+
       <table>
         <thead>
           <tr>
@@ -245,46 +300,43 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {/*
-            {Object.keys(data).map((id, index) => {
-              const imageUrl = data[id].Url;
+          {Object.keys(data).map((id, index) => {
+            const imageUrl = data[id].Url;
 
-              return (
-                <tr key={id}>
-                  <td scope="row" style={{ textAlign: "center" }}>
-                    {index + 1}
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    {imageUrl && (
-                      <img
-                        src={imageUrl}
-                        alt="Pothole"
-                        width="150"
-                        height="100"
-                      />
-                    )}
-                  </td>
-                  <td style={{ textAlign: "center" }}>{data[id].location}</td>
-                  <td style={{ textAlign: "center" }}>{data[id].reportDate}</td>
-                  <td style={{ textAlign: "center" }}>
-                    {data[id].confidentialLevel}
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <select
-                      value={data[id].repairStatus}
-                      onChange={(event) => handleRepairStatusChange(id, event)}
-                    >
-                      <option value="Under Review">Under Review</option>
-                      <option value="Awaiting Approval">Awaiting Approval</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </td>
-                </tr>
-              );
-            })}
-          */}
+            return (
+              <tr key={id}>
+                <td scope="row" style={{ textAlign: "center" }}>
+                  {index + 1}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  {imageUrl && (
+                    <img
+                      src={imageUrl}
+                      alt="Pothole"
+                      width="150"
+                      height="100"
+                    />
+                  )}
+                </td>
+                <td style={{ textAlign: "center" }}>{data[id].location}</td>
+                <td style={{ textAlign: "center" }}>{data[id].reportDate}</td>
+                <td style={{ textAlign: "center" }}>
+                  {data[id].confidentialLevel}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  <select
+                    value={data[id].repairStatus}
+                    onChange={(event) => handleRepairStatusChange(id, event)}
+                  >
+                    <option value="Under Review">Under Review</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
