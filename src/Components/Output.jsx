@@ -80,8 +80,11 @@ const Output = (props) => {
           </>
         ) : (
           <>
-            <Text>{props.classData}</Text>
-            <Text>{props.scoreData}</Text>
+            <Text>Class : {props.classData}</Text>
+            <Text>Confidential Level : {props.scoreData}</Text>
+            <Text>Location : {props.location}</Text>
+            <Text>Report Date : {props.reportDate}</Text>
+            <Text>Repair Status : {props.repairStatus}</Text>
           </>
         )}
       </Paper>
