@@ -20,7 +20,7 @@ function Layout() {
   const [outputScore, setOutputScore] = useState("");
   const [showAlert, setShowAlert] = useState(true);
   const [predicting, setPredicting] = useState(true);
-  const [skeleton, setSkeleton] = useState(true);
+  const [skeleton, setSkeleton] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const sound = new Audio(alertSound);
 
