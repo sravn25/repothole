@@ -84,7 +84,7 @@ const Uploader = (props) => {
         [location.coords.latitude, location.coords.longitude],
         locationAddress
       );
-      props.sendDate(DateTime.now().toFormat("dd-MM-yyyy"));
+      props.sendDate(DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")); // date and time format
     }
   };
 
