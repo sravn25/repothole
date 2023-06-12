@@ -146,9 +146,6 @@ const Dashboard = () => {
     /* (remove when done)
 
         1. Redesign to be consistent with frontend (focus this)
-        2. Sorting function (done)
-        3. report function (CSV) (done)
-        4. notification for JKR (done)
 
     */
 
@@ -337,6 +334,7 @@ const Dashboard = () => {
               </tr>
             );
           })}
+
         </tbody>
       </table>
     </div>
