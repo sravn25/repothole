@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { CSVLink } from "react-csv";
-import { Paper, Alert } from "@mantine/core";
+import { Paper, Alert, Button, createStyles } from "@mantine/core";
 import { TbAlertCircle } from "react-icons/tb";
 
-
+const useStyles = createStyles((theme) => ({
+  button: {
+    paddingLeft: "30px",
+  },
+  link: {
+    textDecoration: "none",
+    color: "white",
+  },
+}));
 
 const Dashboard = () => {
+  const { classes } = useStyles();
   const [data, setData] = useState({});
   const [csvdata, setCSVData] = useState([]); // to store fetched data into array before turn into csv
   const [imageUrl, setImageUrl] = useState("");
@@ -15,9 +24,6 @@ const Dashboard = () => {
     direction: null,
   });
   const [unreadCount, setUnreadCount] = useState(0); // to store unread report
-
-
-
 
   // fetch data & count number of unread report
   useEffect(() => {
@@ -37,7 +43,6 @@ const Dashboard = () => {
           (item) => item.readStatus === "false"
         ).length;
         setUnreadCount(count);
-
       } else {
         setData({});
         setUnreadCount(0);
@@ -52,7 +57,6 @@ const Dashboard = () => {
     };
   }, []);
 
-
   // change readStatus value
   const updateReadStatus = () => {
     const updatedData = { ...data };
@@ -64,7 +68,6 @@ const Dashboard = () => {
     setData(updatedData);
     updateReadData(updatedData);
   };
-
 
   // update readStatus to firebase
   const updateReadData = (updatedData) => {
@@ -78,8 +81,6 @@ const Dashboard = () => {
         console.error("Error updating READ data:", error);
       });
   };
-
-
 
   // Update repairStatus value to firebase
   const updateData = (id, repairStatus) => {
@@ -96,8 +97,6 @@ const Dashboard = () => {
       });
   };
 
-
-
   //  change repair status dropdown box value
   const handleRepairStatusChange = (id, event) => {
     const selectedStatus = event.target.value;
@@ -106,8 +105,6 @@ const Dashboard = () => {
     setData(newData);
     updateData(id, selectedStatus);
   };
-
-
 
   // sorting function
   const sortData = (field) => {
@@ -137,18 +134,7 @@ const Dashboard = () => {
     setData(sortedDataObj);
   };
 
-
-
-
-
-
   return (
-    /* (remove when done)
-
-        1. Redesign to be consistent with frontend (focus this)
-
-    */
-
     <div>
       {unreadCount >= 1 && (
         <Paper style={{ height: "100px" }}>
@@ -158,15 +144,22 @@ const Dashboard = () => {
             withCloseButton
             closeButtonLabel="Notification alert"
           >
-            {unreadCount} new pothole reported. <button onClick={updateReadStatus}>Mark as Read</button>
+            {unreadCount} new pothole reported.{" "}
+            <button onClick={updateReadStatus}>Mark as Read</button>
           </Alert>
         </Paper>
       )}
 
-      <CSVLink data={csvdata} filename={"pothole_report.csv"} target="_blank">
-        Download CSV
-      </CSVLink>
-
+      <Button radius="md" h={30} ml={"30px"} mt={"md"}>
+        <CSVLink
+          data={csvdata}
+          filename={"pothole_report.csv"}
+          target="_blank"
+          className={classes.link}
+        >
+          Download CSV
+        </CSVLink>
+      </Button>
 
       <table>
         <thead>
@@ -334,7 +327,6 @@ const Dashboard = () => {
               </tr>
             );
           })}
-
         </tbody>
       </table>
     </div>

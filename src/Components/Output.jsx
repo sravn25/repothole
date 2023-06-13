@@ -1,11 +1,11 @@
 import React from "react";
-import { createStyles, Paper, Text } from "@mantine/core";
+import { createStyles, Paper, Stack, Text } from "@mantine/core";
 import { SkeletonLoader } from "./Loader";
 
 const useStyles = createStyles((theme) => ({
   terminalBox: {
     border: "1px solid black",
-    height: "20vh",
+    height: "300px",
   },
 }));
 
@@ -22,24 +22,37 @@ const Output = (props) => {
 
     <>
       <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
-        <Text>Results</Text>
-        {props.loading ? (
-          <>
-            {props.loader ? (
-              <SkeletonLoader />
-            ) : (
-              <Text>Please upload an image to start detection.</Text>
-            )}
-          </>
-        ) : (
-          <>
-            <Text>Class: {props.classData}</Text>
-            <Text>Confidential Level: {props.scoreData}</Text>
-            <Text>Location: {props.location}</Text>
-            <Text>Report Date: {props.reportDate}</Text>
-            <Text>Repair Status: {props.repairStatus}</Text>
-          </>
-        )}
+        <Text
+          fz={{ md: "md", lg: "lg", base: "xs" }}
+          fw={700}
+          pl={"xs"}
+          pb={"xs"}
+        >
+          Results
+        </Text>
+        <Paper pl="xl">
+          {props.loading ? (
+            <>
+              {props.loader ? (
+                <SkeletonLoader />
+              ) : (
+                <Text>Please upload an image to start detection.</Text>
+              )}
+            </>
+          ) : (
+            <>
+              <Stack spacing={"xs"}>
+                <Text fw={700} tt={"capitalize"}>
+                  {props.classData.slice()}
+                </Text>
+                <Text>Accuracy: {props.scoreData} %</Text>
+                <Text>Location: {props.location}</Text>
+                <Text>Report Date: {props.reportDate}</Text>
+                <Text>Repair Status: {props.repairStatus}</Text>
+              </Stack>
+            </>
+          )}
+        </Paper>
       </Paper>
     </>
   );

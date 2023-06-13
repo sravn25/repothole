@@ -10,6 +10,7 @@ import {
   Text,
   FileButton,
   Image,
+  Box,
 } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -85,14 +86,17 @@ const Uploader = (props) => {
       );
       const currentDate = new Date(); //get date and time form user local laptop
       const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
       };
-      const currentDateTimeString = currentDate.toLocaleString('zh-CN', options); //set display format of date and time
+      const currentDateTimeString = currentDate.toLocaleString(
+        "zh-CN",
+        options
+      ); //set display format of date and time
       props.sendDate(currentDateTimeString);
       props.sendFile(file);
     }
@@ -196,17 +200,22 @@ const Uploader = (props) => {
           Remove
         </Button>
       </Group>
-      {file && (
-        <Text size="sm" align="center" mt="sm">
-          Picked file: {file.name}
-        </Text>
-      )}
 
-      {location /* display location (remove this after testing) */ ? (
-        <Text>Location: {locationAddress}</Text>
-      ) : (
-        <Text>Fetching location...</Text>
-      )}
+      {/*
+        {file && (
+          <Text size="sm" align="center" mt="sm">
+            Picked file: {file.name}
+          </Text>
+        )}
+      */}
+
+      <Box p="xl" m="xl" sx={(theme) => ({})}>
+        {location /* display location (remove this after testing) */ ? (
+          <Text>Location: {locationAddress}</Text>
+        ) : (
+          <Text>Fetching location...</Text>
+        )}
+      </Box>
     </>
   );
 };
