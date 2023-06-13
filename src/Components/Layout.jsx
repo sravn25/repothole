@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, ScrollArea } from "@mantine/core";
+import { Grid, Paper, ScrollArea } from "@mantine/core";
 import { HeaderAction } from "./Header";
 import Updates from "./Updates";
 import Notification from "./Notification";
@@ -121,7 +121,7 @@ function Layout() {
             reportDate: date, // fetched date and time
             confidentialLevel: outputScore, // accuracy rate
             repairStatus: "Under Review", // default status
-            readStatus: "false",  // read status (false = unread; true = read)
+            readStatus: "false", // read status (false = unread; true = read)
           },
         ];
         // create save record function
@@ -173,20 +173,22 @@ function Layout() {
           </ScrollArea>
         </Grid.Col>
         <Grid.Col span={6}>
-          <Notification
-            show={showAlert}
-            close={closeAlert}
-            classData={outputClass}
-            scoreData={outputScore}
-          />
-          <Uploader
-            sendOutput={handleOutput}
-            sendLocation={retrieveLocation}
-            sendDate={retrieveDate}
-            sendFile={retrieveFile}
-          />
+          <Paper withBorder>
+            <Notification
+              show={showAlert}
+              close={closeAlert}
+              classData={outputClass}
+              scoreData={outputScore}
+            />
+            <Uploader
+              sendOutput={handleOutput}
+              sendLocation={retrieveLocation}
+              sendDate={retrieveDate}
+              sendFile={retrieveFile}
+            />
+          </Paper>
         </Grid.Col>
-        <Grid.Col span={3} style={{ borderLeft: "1px solid black" }}>
+        <Grid.Col span={3}>
           <Output
             classData={"Class : " + outputClass}
             scoreData={outputScore}

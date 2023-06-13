@@ -12,7 +12,7 @@ import { createStyles, Paper, Image } from "@mantine/core";
 const useStyles = createStyles((theme) => ({
   terminalBox: {
     border: "1px solid black",
-    height: "300px",
+    height: "270px",
   },
 }));
 
@@ -32,7 +32,7 @@ const MapDisplay = (props) => {
 
   return (
     <>
-      <Paper shadow="xs" className={classes.terminalBox} mt={"xs"} pl={"xs"}>
+      <Paper shadow="xs" className={classes.terminalBox} mt={"xs"} pl={"xs"} withBorder>
         {props.showMap ? (
           <Image
             src={mapTemplate(
@@ -41,7 +41,7 @@ const MapDisplay = (props) => {
               15
             )}
             alt="static map"
-            height={300}
+            height={250}
             width={300}
             p={"xs"}
           ></Image>

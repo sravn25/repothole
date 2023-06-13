@@ -21,7 +21,7 @@ const Output = (props) => {
     */
 
     <>
-      <Paper shadow="xs" className={classes.terminalBox} pl={"xs"}>
+      <Paper shadow="xs" className={classes.terminalBox} pl={"xs"} withBorder>
         <Text
           fz={{ md: "md", lg: "lg", base: "xs" }}
           fw={700}
