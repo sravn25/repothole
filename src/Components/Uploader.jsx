@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { load, identify, getOutput } from "../Modules/Tensorflow";
+import { getDatabase, ref, onValue, update } from "firebase/database";
+import { TbAlertCircle } from "react-icons/tb";
 import {
   createStyles,
   Center,
@@ -11,6 +13,7 @@ import {
   FileButton,
   Image,
   Box,
+  Alert,
 } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -32,6 +35,9 @@ const Uploader = (props) => {
 
   const [location, setLocation] = useState(null);
   const [locationAddress, setLocationAddress] = useState("");
+
+  const [data, setData] = useState({});
+  const [potholeCount, setPotholeCount] = useState(0); // to store unread report
 
   // sets preview when file is uploaded
   useEffect(() => {
@@ -132,7 +138,7 @@ const Uploader = (props) => {
     timeout: 5000,
   };
 
-  //get current position
+  //get current position & display total pothole reported at user's location
   useEffect(() => {
     if (navigator.geolocation) {
       //call Geolocation API by calling navigator.geolocation
@@ -145,10 +151,45 @@ const Uploader = (props) => {
           console.log("Error retrieving location:", error);
         }
       );
+
+
+      // fetch data from firebase
+      const database = getDatabase();
+      const potholeRef = ref(database, "pothole");
+
+      const onDataChange = (snapshot) => {
+        if (snapshot.exists()) {
+          const fetchedData = snapshot.val();
+          setData({ ...fetchedData });
+
+          // Calculate the number of potholes based on location
+          const count = Object.values(fetchedData).filter(
+            (item) => item.location === locationAddress
+          ).length;
+          setPotholeCount(count); // set number of pothole
+        } else {
+          setData({});
+          setPotholeCount(0);
+        }
+      };
+
+      onValue(potholeRef, onDataChange);
+
+      return () => {
+        setData({});
+      };
+
     } else {
       console.log("Geolocation is not supported in this browser");
     }
   }, []);
+
+
+
+
+
+
+
 
   return (
     /* (remove when done)
@@ -159,6 +200,21 @@ const Uploader = (props) => {
 
     <>
       <Container size="lg">
+
+        {/* display total pothole at user's current location */}
+        {potholeCount >= 1 && (
+          <Paper style={{ height: "100px" }}>
+            <Alert
+              title="Notification"
+              icon={<TbAlertCircle size="1rem" />}
+              withCloseButton
+              closeButtonLabel="Notification alert"
+            >
+              {potholeCount} potholes in your location.{" "}
+            </Alert>
+          </Paper>
+        )}
+
         <Paper
           shadow="xs"
           radius="md"
