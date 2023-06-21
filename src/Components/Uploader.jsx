@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { load, identify, getOutput } from "../Modules/Tensorflow";
-import { getDatabase, ref, onValue, update } from "firebase/database";
-import { TbAlertCircle } from "react-icons/tb";
+import { getDatabase, ref, onValue } from "firebase/database";
 import {
   createStyles,
   Center,
@@ -13,7 +12,6 @@ import {
   FileButton,
   Image,
   Box,
-  Alert,
 } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -138,7 +136,7 @@ const Uploader = (props) => {
     timeout: 5000,
   };
 
-  //get current position & display total pothole reported at user's location
+  //get current position
   useEffect(() => {
     if (navigator.geolocation) {
       //call Geolocation API by calling navigator.geolocation
@@ -151,7 +149,15 @@ const Uploader = (props) => {
           console.log("Error retrieving location:", error);
         }
       );
+    } else {
+      console.log("Geolocation is not supported in this browser");
+    }
+  }, []);
 
+
+
+  useEffect(() => {
+    if (locationAddress) {
       // fetch data from firebase
       const database = getDatabase();
       const potholeRef = ref(database, "pothole");
@@ -181,28 +187,12 @@ const Uploader = (props) => {
       return () => {
         setData({});
       };
-    } else {
-      console.log("Geolocation is not supported in this browser");
     }
-  }, []);
+  }, [locationAddress]);
 
   return (
     <>
       <Container size="lg">
-        {/* display total pothole at user's current location 
-        {potholeCount >= 1 && (
-          <Paper style={{ height: "100px" }}>
-            <Alert
-              title="Notification"
-              icon={<TbAlertCircle size="1rem" />}
-              withCloseButton
-              closeButtonLabel="Notification alert"
-            >
-              {potholeCount} reports of potholes in your location.{" "}
-            </Alert>
-          </Paper>
-        )}*/}
-
         <Paper
           shadow="xs"
           radius="md"
