@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Alert } from "@mantine/core";
+import { Paper, Alert, Text } from "@mantine/core";
 import { TbAlertCircle } from "react-icons/tb";
 
 const Notification = ({ show, close, classData, scoreData }) => {
@@ -25,3 +25,22 @@ const Notification = ({ show, close, classData, scoreData }) => {
 };
 
 export default Notification;
+
+export const PotholeCounts = ({ count }) => {
+  return (
+    <>
+      <Paper style={{ height: "100px" }}>
+        <Alert
+          title="Number of Potholes Reported at Current Location"
+          icon={<TbAlertCircle size="1rem" />}
+          color={count >= 1 ? "red" : "blue"}
+        >
+          <Text size="lg" underline span>
+            {count}
+          </Text>{" "}
+          reported {count > 0 ? "potholes" : "pothole"} nearby
+        </Alert>
+      </Paper>
+    </>
+  );
+};

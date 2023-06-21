@@ -152,7 +152,6 @@ const Uploader = (props) => {
         }
       );
 
-
       // fetch data from firebase
       const database = getDatabase();
       const potholeRef = ref(database, "pothole");
@@ -167,9 +166,13 @@ const Uploader = (props) => {
             (item) => item.location === locationAddress
           ).length;
           setPotholeCount(count); // set number of pothole
+          props.sendReportCount(count); // updates state in Layout.jsx to be passed to Notification.jsx
+          console.log("i am counting :", count);
         } else {
           setData({});
           setPotholeCount(0);
+          props.sendReportCount(0);
+          console.log("i am not counting");
         }
       };
 
@@ -178,30 +181,15 @@ const Uploader = (props) => {
       return () => {
         setData({});
       };
-
     } else {
       console.log("Geolocation is not supported in this browser");
     }
   }, []);
 
-
-
-
-
-
-
-
   return (
-    /* (remove when done)
-
-        1. If pothole, upload to Firebase
-
-    */
-
     <>
       <Container size="lg">
-
-        {/* display total pothole at user's current location */}
+        {/* display total pothole at user's current location 
         {potholeCount >= 1 && (
           <Paper style={{ height: "100px" }}>
             <Alert
@@ -210,10 +198,10 @@ const Uploader = (props) => {
               withCloseButton
               closeButtonLabel="Notification alert"
             >
-              {potholeCount} potholes in your location.{" "}
+              {potholeCount} reports of potholes in your location.{" "}
             </Alert>
           </Paper>
-        )}
+        )}*/}
 
         <Paper
           shadow="xs"

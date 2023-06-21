@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Paper, ScrollArea } from "@mantine/core";
 import { HeaderAction } from "./Header";
 import Updates from "./Updates";
-import Notification from "./Notification";
+import Notification, { PotholeCounts } from "./Notification";
 import Uploader from "./Uploader";
 import Output from "./Output";
 import Dashboard from "./Dashboard";
@@ -36,6 +36,7 @@ function Layout() {
   const [date, setDate] = useState("");
   const [file, setFile] = useState("");
   const [repairStatus, setRepairStatus] = useState("");
+  const [reportCount, setReportCount] = useState(0);
 
   // updates output text in Output.jsx
   const updateOutputComponent = (newData) => {
@@ -105,6 +106,12 @@ function Layout() {
   const retrieveDate = (date) => {
     console.log(`received date: ${date}`);
     setDate(date);
+  };
+
+  // get pothole report count from Uploader.jsx
+  const retrieveReportCount = (count) => {
+    console.log(`received report count: ${count}`);
+    setReportCount(count);
   };
 
   // save data to firebase
@@ -185,7 +192,9 @@ function Layout() {
               sendLocation={retrieveLocation}
               sendDate={retrieveDate}
               sendFile={retrieveFile}
+              sendReportCount={retrieveReportCount}
             />
+            <PotholeCounts count={reportCount} />
           </Paper>
         </Grid.Col>
         <Grid.Col span={3}>
