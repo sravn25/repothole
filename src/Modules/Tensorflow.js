@@ -6,18 +6,17 @@ let output = null;
 // Need to write a function to validate the output
 // only want pothole output, if plain just reset it to empty
 // must run once during every prediction to keep the output clean
-const validateOutput = (score) => score === 1 ? true : false;
-
+const validateOutput = (score) => (score === 1 ? true : false);
 
 export const getOutput = () => {
   if (output) return output;
 };
 
-// loads NewTFJS as graph model 
+// loads NewTFJS as graph model
 export const load = async () => {
   try {
     //model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
-    model = await tf.loadGraphModel("http://localhost:3000/tflife/model.json");
+    model = await tf.loadGraphModel(process.env.PUBLIC_URL + "/tflife/model.json");
   } catch (error) {
     console.log(error);
   }
@@ -84,7 +83,7 @@ export const predict = async (imageTensor) => {
     const prediction = await model.predict(imageTensor);
     const softmaxPrediction = tf.softmax(prediction); // apply softmax function
     const predictionScores = softmaxPrediction.arraySync();
-    const classes = ['plain', 'potholes']; // classes for result
+    const classes = ["plain", "potholes"]; // classes for result
 
     if (!predictionScores) {
       console.log("Error: Unable to retrieve prediction values");
@@ -102,7 +101,7 @@ export const predict = async (imageTensor) => {
     console.log(`Predicted class: ${predictedClass}\n
     Predicted Score: ${predictedScore}`);
     output = `${predictedClass} ${predictedScore}`;
-    console.log(output)
+    console.log(output);
   } catch (error) {
     console.log(error);
     console.log("Error: TensorFlow Operation Failed");
