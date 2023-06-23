@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "./Modules/Firebase";
 import { MantineProvider } from "@mantine/core";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import Layout, { DashboardLayout } from "./Components/Layout";
 
 function App() {
