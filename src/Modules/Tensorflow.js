@@ -15,8 +15,8 @@ export const getOutput = () => {
 // loads NewTFJS as graph model
 export const load = async () => {
   try {
-    //model = await tf.loadGraphModel("http://localhost:3000/NewTFJS/model.json");
-    model = await tf.loadGraphModel(process.env.PUBLIC_URL + "/tflife/model.json");
+    const baseURL = window.location.origin;
+    model = await tf.loadGraphModel(`${baseURL}/tflife/model.json`);
   } catch (error) {
     console.log(error);
   }
