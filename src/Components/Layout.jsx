@@ -60,7 +60,7 @@ function Layout() {
         setSkeleton(false);
         setPredicting(false);
         playAlertSound();
-      }, 2500);
+      }, 500);
     }
   };
 
