@@ -59,7 +59,6 @@ function Layout() {
         setShowMap(true);
         setSkeleton(false);
         setPredicting(false);
-        playAlertSound();
       }, 2500);
     }
   };
@@ -67,9 +66,14 @@ function Layout() {
   // runs when score is updated
   useEffect(() => {
     console.log("updated outputScore", outputClass);
-    //!outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
-    outputClass === "potholes" ? setShowAlert(true) : setShowAlert(false); // shows alert (might need to write a better logic)
-    outputClass === "potholes" ? setShowMap(true) : setShowMap(false); //
+    // !outputClass ? setPredicting(true) : setPredicting(false); // runs the loading effect at output
+    if (outputClass === "potholes") {
+      setShowAlert(true);
+      playAlertSound();
+    } else {
+      setShowAlert(false);
+    }
+    outputClass === "potholes" ? setShowMap(true) : setShowMap(false);
   }, [outputClass]);
 
   // receives output text from Tensorflow.js and runs the function above
@@ -126,7 +130,7 @@ function Layout() {
             file: file, // image
             location: center.address, // fetched location address
             reportDate: date, // fetched date and time
-            confidentialLevel: outputScore, // accuracy rate
+            confidenceLevel: outputScore, // accuracy rate
             repairStatus: "Under Review", // default status
             readStatus: "false", // read status (false = unread; true = read)
           },
@@ -138,14 +142,13 @@ function Layout() {
             const { file, ...data } = record;
             const imageRef = ref(storage, `images/${file.name}_${v4()}`); //set image file name
             await uploadBytes(imageRef, file); // upload image to firebase storage
-            alert("Image uploaded successfully");
             const url = await getDownloadURL(imageRef); // convert image into downloadURL, since firebase realtime database cant directly save image
             const newRecordRef = push(databaseRef(database, "pothole"));
             await set(newRecordRef, {
               Url: url,
               ...data,
             }); // push data to firebase realtime database
-            alert("Data saved successfully");
+            alert("Submitted to JKR for review");
           } catch (error) {
             console.error("Error uploading image:", error);
             // Handle the error appropriately
