@@ -253,7 +253,7 @@ const Dashboard = () => {
                 paddingLeft: "40px",
               }}
             >
-              Confidential Level
+              Confidence Level
             </th>
             <th
               style={{
@@ -311,7 +311,7 @@ const Dashboard = () => {
                 <td style={{ textAlign: "center" }}>{data[id].location}</td>
                 <td style={{ textAlign: "center" }}>{data[id].reportDate}</td>
                 <td style={{ textAlign: "center" }}>
-                  {data[id].confidentialLevel}
+                  {data[id].confidenceLevel}
                 </td>
                 <td style={{ textAlign: "center" }}>
                   <select
