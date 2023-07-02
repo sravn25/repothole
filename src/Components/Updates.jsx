@@ -12,7 +12,7 @@ const Updates = () => {
   // output data = confidential level, report date and repair status
   const renderTooltipContent = (item) => (
     <div>
-      <Text>confidential Level: {item.confidentialLevel}</Text>
+      <Text>confidence Level: {item.confidenceLevel}</Text>
       <Text>Report Date: {item.reportDate}</Text>
       <Text>Repair Status: {item.repairStatus}</Text>
     </div>
